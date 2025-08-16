@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Profile;
+namespace App\Modules\Profile\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Follower;
 use App\Modules\Master\Models\User;
+use App\Modules\Profile\Models\Follower;
 use App\Owners\S3Storage;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +39,7 @@ class ProfileController extends Controller
         return view('profile', [
             'username' => $username,
             'user' => $user,
-            'posts' => $user->post()->orderByDesc('id')->get(),
+            'posts' => $user->post()->orderByDesc('posts.id')->get(),
             'followers' => Follower::query()
             ->where('following_id', $user->id)
             ->get(['follower_id']),
@@ -50,7 +50,7 @@ class ProfileController extends Controller
 
             'isFollower' => Follower::query()
             ->where('following_id', $user->id)
-            ->where('follower_id', auth()->user()->id)
+            ->where('follower_id', $user->id)
             ->first(),
         ]);
     }
@@ -88,7 +88,7 @@ class ProfileController extends Controller
         ->where('username', $username);
 
         $follower = Follower::query()
-        ->where('follower_id', auth()->user()->id);
+        ->where('follower_id', $user->id);
 
         if(
             !$user->exists() ||

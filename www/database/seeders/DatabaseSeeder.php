@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Comment;
-use App\Models\Like;
-use App\Models\Post;
 use App\Modules\Master\Models\User;
+use App\Modules\Profile\Models\Comment;
+use App\Modules\Profile\Models\Like;
+use App\Modules\Profile\Models\Post;
 use Illuminate\Database\Seeder;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;

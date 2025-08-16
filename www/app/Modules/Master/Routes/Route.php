@@ -14,7 +14,7 @@ class Route extends \Illuminate\Support\Facades\Route
     private static function routers(): void
     {
         Route::get('/', function(){
-            return 'test';
+            return view('index');
         })->name('master.home');
     }
 }

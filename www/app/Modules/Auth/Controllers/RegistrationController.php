@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Modules\Auth\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Master\Models\User;
@@ -8,7 +8,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-class RegsController extends Controller
+class RegistrationController extends Controller
 {
     function index(Request $request): View|RedirectResponse
     {
@@ -32,8 +32,7 @@ class RegsController extends Controller
         ->where('email', $data['email'])
         ->exists();
 
-        if($isUser)
-        {
+        if($isUser) {
             return back()->withErrors('User exists');
         }
 
@@ -46,7 +45,7 @@ class RegsController extends Controller
         $user->save();
 
         return redirect()
-        ->route('login')
-        ->with('success', 'You have successfully registed in!');
+        ->route('auth.login')
+        ->with('success', 'You have successfully register in!');
     }
 }

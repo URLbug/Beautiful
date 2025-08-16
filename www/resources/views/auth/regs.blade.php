@@ -9,7 +9,7 @@
                 class="img-fluid" alt="Sample image">
             </div>
             <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-            <form action="{{ route('regs') }}" method="POST">
+            <form action="{{ route('auth.registration') }}" method="POST">
                 @csrf
                 <!-- Email input -->
                 <div data-mdb-input-init class="form-outline mb-4">
@@ -29,14 +29,14 @@
                     placeholder="Enter a valid password" />
                     <label class="form-label" for="password">Password</label>
                 </div>
-    
+
                 <div class="text-center text-lg-start mt-4 pt-2">
                 <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
                     style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
                 <p class="small fw-bold mt-2 pt-1 mb-0">Have you an account? <a href="{{ route('login') }}"
                     class="link-danger">Login</a></p>
                 </div>
-    
+
             </form>
             </div>
         </div>

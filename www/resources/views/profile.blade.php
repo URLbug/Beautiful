@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="main-body">
-        
+
                 <div class="row gutters-sm">
                 <div class="col-md-4 mb-3">
                     <div class="card">
@@ -19,12 +19,12 @@
                             <p class="text-secondary mb-1">Followers: {{ count($followers->toArray()) }}</p>
                             <p class="text-muted font-size-sm">Following: {{ count($following->toArray()) }}</p>
 
-                            @if(Auth::user()->username === $username)
-                                <a class="btn btn-outline-primary" href="{{ route('logout') }}">Logout</a>
+                            @if(auth()->user()?->username === $username)
+                                <a class="btn btn-outline-primary" href="{{ route('auth.logout') }}">Logout</a>
                             @else
-                                <form action="{{ route('profile', ['username' => $username]) }}" method="post">
+                                <form action="{{ route('profile.home', ['username' => $username]) }}" method="post">
                                     @csrf
-                                    
+
                                     @if($isFollower === null)
                                         <button class="btn btn-primary">Follow</button>
                                     @else
@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     </div>
-                    
+
                 </div>
                 <div class="col-md-8">
                     <div class="card mb-3">
@@ -69,28 +69,28 @@
                                             @switch($key)
                                                 @case('patreon')
                                                     <a href="{{ $val }}" class="btn group-idk"><i class="fa-brands fa-patreon"></i> Patreon</a>
-                                                    
+
                                                     @break
                                                 @case('github')
                                                     <a href="{{ $val }}" class="btn group-idk"><i class="fa-brands fa-github"></i> Github</a>
-                                                    
+
                                                     @break
                                                 @case('discord')
                                                     <a href="{{ $val }}" class="btn group-idk"><i class="fa-brands fa-discord"></i> Discord</a>
-                                                    
+
                                                     @break
                                                 @case('twitter')
                                                     <a href="{{ $val }}" class="btn group-idk"><i class="fa-brands fa-twitter"></i> Twitter</a>
-                                                    
+
                                                     @break
                                                 @case('tiktok')
                                                     <a href="{{ $val }}" class="btn group-idk"><i class="fa-brands fa-tiktok"></i> TikTok</a>
 
-                                                    
+
                                                     @break
-                                                    
+
                                             @endswitch
-                                        @endif                                  
+                                        @endif
                                     @endforeach
                                 </div>
                             </div>
@@ -98,7 +98,7 @@
                             Not socialnetworks.
                         @endif
 
-                            @if($username === Auth::user()->username)
+                            @if($username === auth()->user()?->username)
                                     <hr>
                                     <div class="row">
                                         <div class="col-sm-12">
@@ -112,7 +112,7 @@
                     <!-- Posts -->
                         <x-posts-component :posts="$posts"/>
 
-                        @if($username === Auth::user()->username)
+                        @if($username === auth()->user()?->username)
                             <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -122,7 +122,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="text-center">
-                                        <form action="{{ route('profile', ['username' => $username]) }}" method="post" enctype="multipart/form-data">
+                                        <form action="{{ route('profile.home', ['username' => $username]) }}" method="post" enctype="multipart/form-data">
                                             @csrf
                                             @method('PATCH')
 
@@ -150,7 +150,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            
+
                                         <button type="submit" class="btn btn-primary">Save changes</button>
                                     </form>
                                 </div>
@@ -158,15 +158,15 @@
                             </div>
                             </div>
                         @endif
-                    
-                    
+
+
                     </div>
 
                     <!-- Posts end -->
-                
+
                 </div>
             </div>
-            
+
 
         </div>
     </div>

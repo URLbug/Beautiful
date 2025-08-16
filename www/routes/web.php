@@ -1,36 +1,18 @@
 <?php
 
 $master = new \App\Modules\Master\Master;
+$auth = new \App\Modules\Auth\Auth;
+$profile = new \App\Modules\Profile\Profile;
 
 $master->registerRoutes()
     ->enable();
 
-//use Illuminate\Support\Facades\Auth;
-//use Illuminate\Support\Facades\Route;
-//
-//Auth::routes(['verify' => true]);
-//
-//Route::namespace('App\Http\Controllers')
-//->group(function() {
-//    Route::get('/', function(){
-//        return !auth()->check()
-//        ? view('index')
-//        : redirect()->route('profile', [
-//            'username' => auth()->user()->username,
-//        ]);
-//    })->name('home');
-//
-//    Route::match(
-//        ['get', 'post'],
-//        '/login',
-//        'Auth\LoginController@index'
-//    )->name('login');
-//
-//    Route::match(
-//        ['get', 'post',],
-//        '/regs',
-//        'Auth\RegsController@index',
-//    )->name('regs');
+$auth->registerRoutes()
+    ->enable();
+
+$profile->registerRoutes()
+    ->enable();
+
 //
 //    Route::middleware('auth')
 //    ->group(function() {

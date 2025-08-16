@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>FurryNet</title>
     <!-- CSS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -12,7 +12,7 @@
         'resources/css/app.css',
         'resources/js/app.js',
     ])
-    
+
     <!-- CSS end -->
 </head>
 <body>
@@ -22,22 +22,22 @@
         <div class="main-menu" id="navbar">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
-                <a class="navbar-brand" href="{{ route('home') }}"><i class="fa-brands fa-wolf-pack-battalion"></i> FurryNet</a>
+                <a class="navbar-brand" href="{{ route('master.home') }}"><i class="fa-brands fa-wolf-pack-battalion"></i> FurryNet</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="{{ route('home') }}">Home</a>
+                                <a class="nav-link active" aria-current="page" href="{{ route('master.home') }}">Home</a>
                             </li>
-                            
+
                             {{-- For auto users want display images and other categories --}}
-                            
+
                             @if(Auth::check())
-                              <li class="nav-item">
-                                  <a class="nav-link" href="{{ route('posts') }}">Posts</a>
-                              </li>
+                                  <li class="nav-item">
+                                      <a class="nav-link" href="{{ route('profile.posts') }}">Posts</a>
+                                  </li>
                               </li>
                             @else
                             {{-- end comments --}}
@@ -46,19 +46,19 @@
                                   <a class="nav-link" href="{{ route('login') }}">Log In</a>
                               </li>
                               <li class="nav-item">
-                                  <a class="nav-link" href="{{ route('regs') }}">Register</a>
+                                  <a class="nav-link" href="{{ route('auth.registration') }}">Register</a>
                               </li>
                             @endif
                         </ul>
-                        
+
                         {{-- The `search` should also be displayed for auth. users --}}
                         @if(Auth::check())
                           <div class="d-flex justify-content-xl-around">
                             <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#makePost">
                               <i class="fa-solid fa-pen-to-square"></i>
                             </button>
-                            
-                            <form action="{{ route('search') }}" method="POST" class="p-2 d-flex">
+
+                            <form action="{{ route('profile.search') }}" method="POST" class="p-2 d-flex">
                                 @csrf
                                 @method('POST')
 
@@ -102,10 +102,10 @@
                   </div>
                 <div class="modal-body">
                     <div class="text-center">
-                      <form action="{{ route('posts') }}" method="post" enctype="multipart/form-data">
+                      <form action="{{ route('profile.posts') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
-                        
+
                         <div class="row">
                           <p>File</p>
                           <input type="file" name="file" id="file">
@@ -153,7 +153,7 @@
               data-mdb-ripple-color="dark"
               ><i class="fab fa-facebook-f"></i
             ></a>
-      
+
             <!-- Twitter -->
             <a
               data-mdb-ripple-init
@@ -163,7 +163,7 @@
               data-mdb-ripple-color="dark"
               ><i class="fab fa-twitter"></i
             ></a>
-      
+
             <!-- Google -->
             <a
               data-mdb-ripple-init
@@ -173,7 +173,7 @@
               data-mdb-ripple-color="dark"
               ><i class="fab fa-google"></i
             ></a>
-      
+
             <!-- Instagram -->
             <a
               data-mdb-ripple-init
@@ -183,7 +183,7 @@
               data-mdb-ripple-color="dark"
               ><i class="fab fa-instagram"></i
             ></a>
-      
+
             <!-- Linkedin -->
             <a
               data-mdb-ripple-init
@@ -214,7 +214,7 @@
       </div>
       <!-- Copyright -->
     </footer>
-   
+
     <!-- JS -->
     <!-- JS end -->
 </body>

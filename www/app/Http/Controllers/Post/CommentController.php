@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Post;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Comment;
-use App\Models\Like;
+use App\Modules\Profile\Models\Comment;
+use App\Modules\Profile\Models\Like;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
     function index(int $id, Request $request): RedirectResponse|JsonResponse
     {
         if($request->isMethod('POST'))
-        {   
+        {
             if($id !== 0 && $request->ajax())
             {
                 return $this->storeLike($id);
@@ -57,7 +57,7 @@ class CommentController extends Controller
         return back();
     }
 
-    function unLike(int $id): JsonResponse 
+    function unLike(int $id): JsonResponse
     {
         $like = $this->isLike($id);
 
@@ -80,8 +80,8 @@ class CommentController extends Controller
             'code' => 200,
         ]);
     }
-    
-    function storeLike(int $id): JsonResponse 
+
+    function storeLike(int $id): JsonResponse
     {
         $like = $this->isLike($id);
 

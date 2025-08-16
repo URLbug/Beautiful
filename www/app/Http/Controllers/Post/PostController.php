@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Post;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Like;
-use App\Models\Post;
+use App\Modules\Profile\Models\Like;
+use App\Modules\Profile\Models\Post;
 use App\Owners\S3Storage;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
@@ -97,7 +97,7 @@ class PostController extends Controller
         }
 
         $like = new Like;
-        
+
         $like->post_id = $id;
         $like->user_id = auth()->user()->id;
 

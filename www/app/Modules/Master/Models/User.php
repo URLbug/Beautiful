@@ -2,10 +2,10 @@
 
 namespace App\Modules\Master\Models;
 
-use App\Models\Comment;
-use App\Models\Follower;
-use App\Models\Like;
-use App\Models\Post;
+use App\Modules\Profile\Models\Comment;
+use App\Modules\Profile\Models\Follower;
+use App\Modules\Profile\Models\Like;
+use App\Modules\Profile\Models\Post;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
