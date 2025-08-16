@@ -2,9 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Modules\Master\Models\User;
 use Tests\TestCase;
 
 class RegsControllerTest extends TestCase
@@ -140,9 +138,9 @@ class RegsControllerTest extends TestCase
             'email' => 'test@example.com',
             'password' => '😀😀😀😀😀😀',
         ]);
-        
+
         $response->assertRedirectToRoute('login');
-        
+
         $this->delete_user();
     }
 }

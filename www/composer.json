@@ -9,8 +9,7 @@
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
-        "league/flysystem-aws-s3-v3": "^3.0",
-        "orchid/platform": "^14.30"
+        "league/flysystem-aws-s3-v3": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",

@@ -2,12 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Post;
-use App\Models\User;
-use App\Owners\S3Storage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class PostControllerTest extends TestCase
@@ -40,7 +34,7 @@ class PostControllerTest extends TestCase
 
         $response->assertStatus(302);
     }
-    
+
     public function test_get_posts(): void
     {
         $this->login();
@@ -112,13 +106,13 @@ class PostControllerTest extends TestCase
 
     //     // Assert
     //     $response->assertRedirect();
-        
+
     //     $post = Post::query()
     //     ->where('name', 'Test Post')
     //     ->where('user_id', 1)
     //     ->orderByDesc('id')
     //     ->first();
-        
+
     //     $this->assertEquals($data['name'], $post->name);
     //     $this->assertEquals($data['description'], $post->description);
     //     $this->assertEquals(1, $post->user_id);

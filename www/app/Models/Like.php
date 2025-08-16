@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Modules\Master\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,17 +17,17 @@ class Like extends Model
         'comment_id',
     ];
 
-    function post(): BelongsTo 
+    function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);
     }
 
-    function comment(): BelongsTo 
+    function comment(): BelongsTo
     {
         return $this->belongsTo(Comment::class);
     }
-    
-    function user(): BelongsTo 
+
+    function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

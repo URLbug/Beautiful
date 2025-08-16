@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Models;
+namespace App\Modules\Master\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Comment;
+use App\Models\Follower;
+use App\Models\Like;
+use App\Models\Post;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-use Orchid\Platform\Models\User as OrchidUser;
-
-class User extends OrchidUser implements MustVerifyEmail
+class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -42,12 +43,12 @@ class User extends OrchidUser implements MustVerifyEmail
         'remember_token',
     ];
 
-    public function following() 
+    public function following()
     {
         return $this->hasMany(Follower::class, 'following_id');
     }
-    
-    public function follower() 
+
+    public function follower()
     {
         return $this->hasMany(Follower::class, 'follower_id');
     }

@@ -65,6 +65,13 @@ services:
     networks:
       - beautiful-net
 
+  adminer:
+    image: adminer
+    ports:
+      - '8080:8080'
+    networks:
+      - beautiful-net
+
 networks:
   beautiful-net:
     driver: bridge

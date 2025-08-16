@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Profile;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Follower;
-use App\Models\User;
+use App\Modules\Master\Models\User;
 use App\Owners\S3Storage;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
@@ -47,7 +47,7 @@ class ProfileController extends Controller
             'following' => Follower::query()
             ->where('follower_id', $user->id)
             ->get(['following_id']),
-            
+
             'isFollower' => Follower::query()
             ->where('following_id', $user->id)
             ->where('follower_id', auth()->user()->id)
@@ -59,7 +59,7 @@ class ProfileController extends Controller
     {
         $user = User::query()
         ->where('username', $username);
-        
+
         $follower = Follower::query()
         ->where('following_id', $user->first()->id)
         ->where('follower_id', auth()->user()->id)
@@ -86,7 +86,7 @@ class ProfileController extends Controller
     {
         $user = User::query()
         ->where('username', $username);
-        
+
         $follower = Follower::query()
         ->where('follower_id', auth()->user()->id);
 
