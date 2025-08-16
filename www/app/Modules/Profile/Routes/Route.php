@@ -23,11 +23,11 @@ class Route extends \Illuminate\Support\Facades\Route
         self::match(
             ['get', 'post'],
             '/posts/{id?}',
-            'PostController@index'
+            'Post\PostController@index'
         )->name('profile.posts')
         ->defaults('id', 0);
 
-        self::post('/comment/{id?}', 'CommentController@index')
+        self::post('/comment/{id?}', 'Post\CommentController@index')
         ->name('profile.comment')
         ->defaults('id', 0);
 

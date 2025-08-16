@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Post;
+namespace App\Modules\Profile\Controllers\Post;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Profile\Models\Comment;

@@ -88,7 +88,7 @@ class ProfileController extends Controller
         ->where('username', $username);
 
         $follower = Follower::query()
-        ->where('follower_id', $user->id);
+        ->where('follower_id', auth()->user()->id);
 
         if(
             !$user->exists() ||

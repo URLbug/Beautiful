@@ -28,17 +28,16 @@
                 </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="{{ route('master.home') }}">Home</a>
-                            </li>
 
                             {{-- For auto users want display images and other categories --}}
 
                             @if(Auth::check())
-                                  <li class="nav-item">
-                                      <a class="nav-link" href="{{ route('profile.posts') }}">Posts</a>
-                                  </li>
-                              </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" aria-current="page" href="{{ route('profile.home', ['username' => auth()->user()->username]) }}">Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('profile.posts') }}">Posts</a>
+                                </li>
                             @else
                             {{-- end comments --}}
 
