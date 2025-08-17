@@ -5,7 +5,7 @@ namespace App\Modules\Profile\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Master\Models\User;
 use App\Modules\Profile\Models\Follower;
-use App\Owners\S3Storage;
+use App\Modules\S3Storage\Lib\S3Storage;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

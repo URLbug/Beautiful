@@ -2,12 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Owners\S3Storage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class ProfileControllerTest extends TestCase
@@ -20,7 +15,7 @@ class ProfileControllerTest extends TestCase
         ]);
     }
 
-    
+
 
     public function test_base(): void
     {

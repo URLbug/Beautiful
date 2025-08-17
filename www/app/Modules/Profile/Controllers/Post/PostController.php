@@ -5,7 +5,7 @@ namespace App\Modules\Profile\Controllers\Post;
 use App\Http\Controllers\Controller;
 use App\Modules\Profile\Models\Like;
 use App\Modules\Profile\Models\Post;
-use App\Owners\S3Storage;
+use App\Modules\S3Storage\Lib\S3Storage;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
