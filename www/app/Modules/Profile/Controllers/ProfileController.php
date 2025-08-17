@@ -5,6 +5,7 @@ namespace App\Modules\Profile\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Master\Models\User;
 use App\Modules\Profile\Models\Follower;
+use App\Modules\Profile\Repository\FollowerRepository;
 use App\Modules\S3Storage\Lib\S3Storage;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -21,16 +22,14 @@ class ProfileController extends Controller
             return $this->update($request);
         }
 
-        if($request->isMethod('POST'))
-        {
+        if($request->isMethod('POST')) {
             return $this->store($username);
         }
 
         $user = User::query()
         ->where('username', $username);
 
-        if(!$user->exists())
-        {
+        if(!$user->exists()) {
             abort(404);
         }
 
@@ -40,18 +39,9 @@ class ProfileController extends Controller
             'username' => $username,
             'user' => $user,
             'posts' => $user->post()->orderByDesc('posts.id')->get(),
-            'followers' => Follower::query()
-            ->where('following_id', $user->id)
-            ->get(['follower_id']),
-
-            'following' => Follower::query()
-            ->where('follower_id', $user->id)
-            ->get(['following_id']),
-
-            'isFollower' => Follower::query()
-            ->where('following_id', $user->id)
-            ->where('follower_id', $user->id)
-            ->first(),
+            'followers' => FollowerRepository::getByFollowers($user->id),
+            'following' => FollowerRepository::getByFollowing($user->id),
+            'isFollower' => FollowerRepository::getFirst($user->id, false),
         ]);
     }
 
