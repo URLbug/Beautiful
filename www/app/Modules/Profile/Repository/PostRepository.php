@@ -18,9 +18,9 @@ final class PostRepository implements PostRepositoryInterface
     public static function save(array $data): bool
     {
         if(
-            !isset($data['name']) &&
-            !isset($data['file']) &&
-            !isset($data['description']) &&
+            !isset($data['name']) ||
+            !isset($data['file']) ||
+            !isset($data['description']) ||
             !isset($data['user_id'])
         ) {
             throw new InvalidArgumentException('Required (name, file, description, user_id) parameter is missing');
@@ -65,7 +65,7 @@ final class PostRepository implements PostRepositoryInterface
      */
     public static function getById(int $id): Post|false
     {
-        return Post::query()->find($id)->first();
+        return Post::query()->find($id);
     }
 
     /**
@@ -87,7 +87,7 @@ final class PostRepository implements PostRepositoryInterface
         $query = Post::query();
 
         if($orderBy) {
-            if(count($orderBy) <= 1) {
+            if(count($orderBy) < 1) {
                 return $query->paginate($perPage, $columns, $pageName, $page);
             }
 
@@ -95,5 +95,29 @@ final class PostRepository implements PostRepositoryInterface
         }
 
         return $query->paginate($perPage, $columns, $pageName, $page);
+    }
+
+    public static function search(array $data): LengthAwarePaginator
+    {
+        $query = Post::query();
+
+        $post = new Post;
+        $fillableAttribute = $post->getFillable();
+
+        $itemQuery = 0;
+        foreach($data as $key => $value) {
+            if(in_array($key, $fillableAttribute)) {
+                if($itemQuery > 0) {
+                    $query = $query->orWhere($key, 'like', '%' . $value . '%');
+                    continue;
+                }
+
+                $query = $query->where($key, 'like', '%' . $value . '%');
+            }
+
+            $itemQuery++;
+        }
+
+        return $query->paginate();
     }
 }

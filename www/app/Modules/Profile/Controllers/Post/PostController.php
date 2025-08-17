@@ -5,6 +5,7 @@ namespace App\Modules\Profile\Controllers\Post;
 use App\Http\Controllers\Controller;
 use App\Modules\Profile\Models\Like;
 use App\Modules\Profile\Models\Post;
+use App\Modules\Profile\Repository\LikeRepository;
 use App\Modules\Profile\Repository\PostRepository;
 use App\Modules\S3Storage\Lib\S3Storage;
 use Illuminate\Contracts\View\View;
@@ -19,7 +20,7 @@ class PostController extends Controller
     {
         if($id !== 0) {
             if($request->isMethod('POST') && $request->ajax()) {
-                return $this->storeLike($id);
+                return $this->store($request, $id);
             }
 
             $post = PostRepository::getById($id);
@@ -34,7 +35,7 @@ class PostController extends Controller
             return $this->store($request);
         }
 
-        $posts = PostRepository::getPagination([$id, 'desc']);
+        $posts = PostRepository::getPagination(['id', 'desc']);
         return $this->show($posts);
     }
 
@@ -51,9 +52,13 @@ class PostController extends Controller
         ]);
     }
 
-    function store(Request $request): RedirectResponse|JsonResponse
+    function store(Request $request, ?int $id = null): RedirectResponse|JsonResponse
     {
-        return $this->create($request);
+        if($id === null) {
+            return $this->create($request);
+        }
+
+        return $this->like($id);
     }
 
     function create(Request $request): RedirectResponse
@@ -69,6 +74,9 @@ class PostController extends Controller
         }
 
         $file = S3Storage::getFile($data['file']->hashName());
+        if(!$file) {
+            return back()->withErrors('Create post failed');
+        }
 
         $data = [
             'name' => $data['name'],
@@ -83,44 +91,31 @@ class PostController extends Controller
         return back()->with('success', 'Create new post!');
     }
 
-    function storeLike(int $id): JsonResponse
+    function like(int $id): JsonResponse
     {
-        $like = $this->isLike($id);
-
-        if(isset($like)) {
-            return $this->unLike($id);
-        }
-
-        $like = new Like;
-
-        $like->post_id = $id;
-        $like->user_id = auth()->user()->id;
-
-        $like->save();
-
-        return response()->json([
-            'id' => $id,
-            'likes' => PostRepository::getById($id)->like()->count(),
-            'code' => 200,
-        ]);
-    }
-
-    function unLike(int $id): JsonResponse
-    {
-        $like = $this->isLike($id);
-
-        if(!isset($like))
-        {
-            return response()->json([
-                'message' => 'error',
-                'code' => 500,
+        if($id === 0) {
+            return response(status: 404)->json([
+                'message' => 'Post not found',
+                'status' => 404,
             ]);
         }
 
-        Like::query()
-        ->where('post_id', $id)
-        ->where('user_id', auth()->user()->id)
-        ->delete();
+        $like = LikeRepository::getLikesByPost($id, auth()->user()->id);
+        if(isset($like) && !$like->isDirty()) {
+            return $this->unLike($id, $like->id);
+        }
+
+        $isSave = LikeRepository::save([
+            'user_id' => auth()->user()->id,
+            'post_id' => $id,
+        ]);
+
+        if(!$isSave) {
+            return response(status: 500)->json([
+                'message' => 'Save failed',
+                'status' => 500,
+            ]);
+        }
 
         return response()->json([
             'id' => $id,
@@ -129,18 +124,20 @@ class PostController extends Controller
         ]);
     }
 
-    private function isLike(int $id): RedirectResponse|Like|null
+    function unLike(int $postId, int $likeId): JsonResponse
     {
-        if($id === 0)
-        {
-            return back();
+        $isRemove = LikeRepository::remove(['id' => $likeId,]);
+        if(!$isRemove) {
+            return response(status: 500)->json([
+                'message' => 'Remove failed',
+                'status' => 500,
+            ]);
         }
 
-        $like = Like::query()
-        ->where('post_id', $id)
-        ->where('user_id', auth()->user()->id)
-        ->first();
-
-        return $like;
+        return response()->json([
+            'id' => $postId,
+            'likes' => PostRepository::getById($postId)->like()->count(),
+            'code' => 200,
+        ]);
     }
 }

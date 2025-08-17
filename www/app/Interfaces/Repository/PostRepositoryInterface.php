@@ -6,6 +6,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface PostRepositoryInterface extends RepositoryInterface
 {
+    public static function search(array $data): LengthAwarePaginator;
     public static function getPagination(
         ?array $orderBy = null,
         ?int $perPage = null,

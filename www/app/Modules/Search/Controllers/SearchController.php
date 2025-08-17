@@ -4,6 +4,7 @@ namespace App\Modules\Search\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Profile\Models\Post;
+use App\Modules\Profile\Repository\PostRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -27,9 +28,9 @@ class SearchController extends Controller
             'search' => 'string|max:255'
         ]);
 
-        return Post::query()
-        ->where('description', 'like', $data['search'] . '%')
-        ->orWhere('name', 'like', $data['search'] . '%')
-        ->paginate();
+        return PostRepository::search([
+            'description' => $data['search'],
+            'name' => $data['search'],
+        ]);
     }
 }
