@@ -5,11 +5,13 @@ namespace App\Modules\Profile\Controllers\Post;
 use App\Http\Controllers\Controller;
 use App\Modules\Profile\Models\Like;
 use App\Modules\Profile\Models\Post;
+use App\Modules\Profile\Repository\PostRepository;
 use App\Modules\S3Storage\Lib\S3Storage;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PostController extends Controller
 {
@@ -20,31 +22,41 @@ class PostController extends Controller
                 return $this->storeLike($id);
             }
 
-            $post = $this->getPost($id);
+            $post = PostRepository::getById($id);
             if(!isset($post)) {
                 abort(404);
             }
 
-            return view('posts.detail', [
-                'post' => $post,
+            return $this->show($post);
+        }
+
+        if($request->isMethod('POST')) {
+            return $this->store($request);
+        }
+
+        $posts = PostRepository::getPagination([$id, 'desc']);
+        return $this->show($posts);
+    }
+
+    function show(LengthAwarePaginator|Post $post): View
+    {
+        if($post instanceof LengthAwarePaginator) {
+            return view('posts.posts', [
+                'posts' => $post,
             ]);
         }
 
-        if($request->isMethod('POST'))
-        {
-            return $this->storePost($request);
-        }
-
-        $posts = Post::query()
-        ->orderByDesc('id')
-        ->paginate();
-
-        return view('posts.posts', [
-            'posts' => $posts,
+        return view('posts.detail', [
+            'post' => $post,
         ]);
     }
 
-    function storePost(Request $request): RedirectResponse
+    function store(Request $request): RedirectResponse|JsonResponse
+    {
+        return $this->create($request);
+    }
+
+    function create(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'name' => 'string|max:255',
@@ -52,43 +64,30 @@ class PostController extends Controller
             'description' => 'string|max:255',
         ]);
 
-        $post = new Post;
-
-        if(!S3Storage::putFile('/', $data['file']))
-        {
-            abort(500);
+        if(!S3Storage::putFile('/', $data['file'])) {
+            return back()->withErrors('Create post failed');
         }
 
-        $post->file = S3Storage::getFile($data['file']->hashName());
+        $file = S3Storage::getFile($data['file']->hashName());
 
-        $post->name = $data['name'];
-        $post->description = $data['description'];
-        $post->user_id = auth()->user()->id;
+        $data = [
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'file' => $file,
+        ];
 
-        $post->save();
+        if(!PostRepository::save($data)) {
+            return back()->withErrors('Create post failed');
+        }
 
         return back()->with('success', 'Create new post!');
-    }
-
-    function getPost(int $id): ?Post
-    {
-        $post = Post::query()
-        ->where('id', $id);
-
-        if(isset($post))
-        {
-            return $post->first();
-        }
-
-        return null;
     }
 
     function storeLike(int $id): JsonResponse
     {
         $like = $this->isLike($id);
 
-        if(isset($like))
-        {
+        if(isset($like)) {
             return $this->unLike($id);
         }
 
@@ -101,7 +100,7 @@ class PostController extends Controller
 
         return response()->json([
             'id' => $id,
-            'likes' => count($this->getPost($id)->like->toArray()),
+            'likes' => PostRepository::getById($id)->like()->count(),
             'code' => 200,
         ]);
     }
@@ -125,7 +124,7 @@ class PostController extends Controller
 
         return response()->json([
             'id' => $id,
-            'likes' => count($this->getPost($id)->like->toArray()),
+            'likes' => PostRepository::getById($id)->like()->count(),
             'code' => 200,
         ]);
     }
