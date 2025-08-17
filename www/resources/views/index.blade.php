@@ -6,6 +6,8 @@
         class="bg-image d-flex justify-content-center align-items-center main-picture"
         style="
                 background-image: url({{ asset('img/home.jpg') }});
+                background-repeat: no-repeat;
+                background-size: cover;
                 height: 100vh;
                 "
         >
