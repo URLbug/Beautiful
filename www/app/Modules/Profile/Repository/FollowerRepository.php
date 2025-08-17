@@ -13,8 +13,12 @@ final class FollowerRepository implements FollowerRepositoryInterface
      */
     public static function save(array $data): bool
     {
-        if(!$data['following_id'] || !$data['follower_id']) {
-            return false;
+        if(!isset($data['following_id']) || !isset($data['follower_id'])) {
+            throw new \InvalidArgumentException("Required fields (following_id, follower_id) are missing");
+        }
+
+        if(!is_int($data['following_id']) || !is_int($data['follower_id'])) {
+            throw new \InvalidArgumentException("follower_id and|or following_id must be integer");
         }
 
         $follower = new Follower;
@@ -30,12 +34,26 @@ final class FollowerRepository implements FollowerRepositoryInterface
      */
     public static function remove(array $data): bool
     {
-        if(!$data['following_id'] || !$data['follower_id']) {
-            return false;
+        $follower = Follower::query();
+
+        if(isset($data['id'])) {
+            if(!is_int($data['id'])) {
+                throw new \InvalidArgumentException("Id must be integer");
+            }
+
+            return $follower->find($data['id'])
+                ->delete();
         }
 
-        return Follower::query()
-            ->where('following_id', $data['following_id'])
+        if(!isset($data['following_id']) || !isset($data['follower_id'])) {
+            throw new \InvalidArgumentException("Required fields (following_id, follower_id) are missing");
+        }
+
+        if(!is_int($data['following_id']) || !is_int($data['follower_id'])) {
+            throw new \InvalidArgumentException("follower_id and|or following_id must be integer");
+        }
+
+        return $follower->where('following_id', $data['following_id'])
             ->where('follower_id', $data['follower_id'])
             ->delete();
     }
@@ -45,17 +63,34 @@ final class FollowerRepository implements FollowerRepositoryInterface
      */
     public static function update(array $data): int
     {
-        if(!$data['following_id'] || !$data['follower_id']) {
-            return false;
+        if (!isset($data['following_id']) || !isset($data['follower_id'])) {
+            throw new \InvalidArgumentException('Required fields (following_id, follower_id) are missing');
         }
 
-        return Follower::query()
-            ->where('following_id', $data['following_id'])
-            ->where('follower_id', $data['follower_id'])
-            ->update([
-                'following_id' => $data['following_id'],
-                'follower_id' => $data['follower_id'],
-            ]);
+        $followingId = filter_var($data['following_id'], FILTER_VALIDATE_INT);
+        $followerId = filter_var($data['follower_id'], FILTER_VALIDATE_INT);
+
+        if ($followingId === false || $followerId === false) {
+            throw new \InvalidArgumentException('following_id and follower_id must be integers');
+        }
+
+        $query = Follower::query();
+
+        if (isset($data['id'])) {
+            $id = filter_var($data['id'], FILTER_VALIDATE_INT);
+            if ($id === false) {
+                throw new \InvalidArgumentException('id must be an integer');
+            }
+
+            $query = $query->where('id', $id);
+        }
+
+        $updateData = [
+            'following_id' => $followingId,
+            'follower_id' => $followerId,
+        ];
+
+        return $query->update($updateData);
     }
 
     /**
@@ -69,7 +104,7 @@ final class FollowerRepository implements FollowerRepositoryInterface
     /**
      * @inheritDoc
      */
-    public static function getById(int $id): Model|false
+    public static function getById(int $id): Follower|false
     {
         return Follower::query()->find($id);
     }
@@ -79,8 +114,12 @@ final class FollowerRepository implements FollowerRepositoryInterface
      */
     public static function getBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): \Illuminate\Support\Collection
     {
-        if(!$criteria['following_id'] && !$criteria['follower_id']) {
-            throw new \LogicException('Not found follower_id or not follower_id');
+        if(!isset($data['following_id']) || !isset($data['follower_id'])) {
+            throw new \InvalidArgumentException("Required fields (following_id, follower_id) are missing");
+        }
+
+        if(!is_int($data['following_id']) || !is_int($data['follower_id'])) {
+            throw new \InvalidArgumentException("follower_id and|or following_id must be integer");
         }
 
         $follower = Follower::query();
@@ -93,16 +132,22 @@ final class FollowerRepository implements FollowerRepositoryInterface
             $follower = $follower->where('follower_id', $criteria['follower_id']);
         }
 
-        if($orderBy) {
-            $follower = $follower->orderBy($orderBy[0], $orderBy[1]);
+        if($orderBy !== null) {
+            $fillableAttributes = (new Follower)->getFillable();
+
+            foreach($orderBy as $field => $direction) {
+                if (in_array($field, $fillableAttributes)) {
+                    $follower->orderBy($field, strtolower($direction) === 'desc' ? 'desc' : 'asc');
+                }
+            }
         }
 
-        if($limit) {
-            $follower = $follower->limit($limit);
+        if($limit !== null) {
+            $follower->take($limit);
         }
 
-        if($limit && $offset) {
-            $follower = $follower->offset($offset);
+        if ($offset !== null) {
+            $follower->skip($offset);
         }
 
         return $follower->get();
@@ -122,10 +167,10 @@ final class FollowerRepository implements FollowerRepositoryInterface
             ->get(['following_id',]);
     }
 
-    public static function getFirst(int|false $follower_id, int|false $following_id): ?Model
+    public static function getFirst(int|false $follower_id, int|false $following_id): ?Follower
     {
         if(!$follower_id && !$following_id) {
-            throw new \LogicException('Not found follower_id or follower_id');
+            throw new \InvalidArgumentException('Required field follower_id or follower_id');
         }
 
         $follower = Follower::query();

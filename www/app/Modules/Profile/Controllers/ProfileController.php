@@ -4,6 +4,7 @@ namespace App\Modules\Profile\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Master\Models\User;
+use App\Modules\Master\Repository\UserRepository;
 use App\Modules\Profile\Models\Follower;
 use App\Modules\Profile\Repository\FollowerRepository;
 use App\Modules\S3Storage\Lib\S3Storage;
@@ -26,14 +27,10 @@ class ProfileController extends Controller
             return $this->store($username);
         }
 
-        $user = User::query()
-        ->where('username', $username);
-
-        if(!$user->exists()) {
+        $user = UserRepository::getByUsername($username);
+        if($user->isDirty()) {
             abort(404);
         }
-
-        $user = $user->first();
 
         return view('profile', [
             'username' => $username,
@@ -47,21 +44,19 @@ class ProfileController extends Controller
 
     function store(string $username): RedirectResponse
     {
-        $user = User::query()
-        ->where('username', $username);
-
-        if(!$user->exists()) {
+        $user = UserRepository::getByUsername($username);
+        if($user->isDirty()) {
             return back()->withErrors("User $username not found");
         }
 
-        $follower = FollowerRepository::getFirst($user->first()->id, auth()->user()->id);
+        $follower = FollowerRepository::getFirst($user->id, auth()->user()->id);
         if($follower !== null) {
-            return $this->unflower($username);
+            return $this->unflower($user);
         }
 
         $isSave = FollowerRepository::save([
             'follower_id' => auth()->user()->id,
-            'following_id' => $user->first()->id,
+            'following_id' => $user->id,
         ]);
 
         if($isSave) {
@@ -71,19 +66,18 @@ class ProfileController extends Controller
         return back()->withErrors("Something went wrong");
     }
 
-    function unflower(string $username): RedirectResponse
+    function unflower(User $user): RedirectResponse
     {
-        $user = User::query()
-        ->where('username', $username);
+        $username = $user->username;
 
-        $follower = FollowerRepository::getFirst($user->first()->id, auth()->user()->id);
+        $follower = FollowerRepository::getFirst($user->id, auth()->user()->id);
         if($follower->isDirty()) {
             return back()->with('success', "Unfollow $username successfully");
         }
 
         $isRemove = FollowerRepository::remove([
             'following_id' => auth()->user()->id,
-            'follower_id' => $user->first()->id,
+            'follower_id' => $user->id,
         ]);
 
         if($isRemove) {
@@ -105,41 +99,38 @@ class ProfileController extends Controller
             'tiktok' => 'string|url|nullable',
         ]);
 
-        $user = User::query()
-        ->where('username', auth()->user()->username)
-        ->first();
+        $user = UserRepository::getById(auth()->user()->id);
 
-        if(isset($data['picture']))
-        {
+        $updateData = [];
+        if(isset($data['picture'])) {
             $picture = $data['picture'];
 
-            if(isset($user->picture))
-            {
-                if(!S3Storage::deleteFile($user->picture))
-                {
-                    abort(500);
+            if(isset($user->picture)) {
+                if(!S3Storage::deleteFile($user->picture)) {
+                    return back()->withErrors("Update profile data failed");
                 }
             }
 
-            if(!S3Storage::putFile('/', $picture))
-            {
-                abort(500);
+            if(!S3Storage::putFile('/', $picture)) {
+                return back()->withErrors("Update profile data failed");
             }
 
-            $user->picture = S3Storage::getFile($picture->hashName());
+            $updateData['picture'] = S3Storage::getFile($picture->hashName());
         }
 
-        if(isset($data['description']))
-        {
-            $user->description = $data['description'];
+        $updateData['id'] = auth()->user()->id;
+        $updateData['description'] = $data['description'];
 
-            unset($data['description']);
+        $updateData['socialnetworks']['patreon'] = $data['patreon'];
+        $updateData['socialnetworks']['github'] = $data['github'];
+        $updateData['socialnetworks']['discord'] = $data['discord'];
+        $updateData['socialnetworks']['tiktok'] = $data['tiktok'];
+        $updateData['socialnetworks']['twitter'] = $data['twitter'];
+
+        if(!UserRepository::update($updateData)) {
+            return back()->withErrors("Update profile data failed");
         }
 
-        $user->socialnetworks = $data;
-
-        $user->save();
-
-        return back();
+        return back()->with('success', "Profile updated successfully");
     }
 }
