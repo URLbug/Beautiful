@@ -82,6 +82,7 @@ class PostController extends Controller
             'name' => $data['name'],
             'description' => $data['description'],
             'file' => $file,
+            'user_id' => auth()->user()->id,
         ];
 
         if(!PostRepository::save($data)) {

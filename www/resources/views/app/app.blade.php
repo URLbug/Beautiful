@@ -4,25 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FurryNet</title>
-    <!-- CSS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-
+    <title>{{ env('APP_NAME') }}</title>
     @vite([
         'resources/css/app.css',
         'resources/js/app.js',
     ])
-
-    <!-- CSS end -->
 </head>
 <body>
       <!-- header -->
       <header>
         <!-- menu -->
         <div class="main-menu" id="navbar">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
                 <div class="container-fluid">
-                <a class="navbar-brand" href="{{ route('master.home') }}"><i class="fa-brands fa-wolf-pack-battalion"></i> FurryNet</a>
+                <a class="navbar-brand" href="{{ route('master.home') }}">
+                    <i class="fa-brands fa-wolf-pack-battalion"></i> {{ env('APP_NAME') }}
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -33,19 +30,27 @@
 
                             @if(Auth::check())
                                 <li class="nav-item">
-                                    <a class="nav-link" aria-current="page" href="{{ route('profile.home', ['username' => auth()->user()->username]) }}">Profile</a>
+                                    <a class="nav-link {{ str_contains(url()->current(), '/profile/' . auth()->user()->username) ? 'active' : '' }}" href="{{ route('profile.home', ['username' => auth()->user()->username]) }}">
+                                        Profile
+                                    </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('profile.posts') }}">Posts</a>
+                                    <a class="nav-link {{ str_contains(url()->current(), '/posts') ? 'active' : ''}}" href="{{ route('profile.posts') }}">
+                                        Posts
+                                    </a>
                                 </li>
                             @else
                             {{-- end comments --}}
 
                               <li class="nav-item">
-                                  <a class="nav-link" href="{{ route('login') }}">Log In</a>
+                                  <a class="nav-link {{ str_contains(url()->current(), '/login') ? 'active' : ''}}" href="{{ route('login') }}">
+                                      Log In
+                                  </a>
                               </li>
                               <li class="nav-item">
-                                  <a class="nav-link" href="{{ route('auth.registration') }}">Register</a>
+                                  <a class="nav-link {{ str_contains(url()->current(), '/registration') ? 'active' : ''}}" href="{{ route('auth.registration') }}">
+                                      Register
+                                  </a>
                               </li>
                             @endif
                         </ul>
@@ -75,7 +80,7 @@
     </header>
     <!-- header end -->
 
-    <main>
+    <main class="mt-5">
       @if(Session::has('success'))
           <div class="alert alert-success alert-dismissible" role="alert">
               <strong>Success !</strong> {{ session('success') }}
@@ -134,11 +139,7 @@
         </div>
     @endif
 
-    <br>
-    <br>
-    <br>
-
-    <footer class="text-center bg-body-tertiary">
+    <footer class="text-center bg-body-tertiary mt-5">
         <!-- Grid container -->
         <div class="container pt-4">
           <!-- Section: Social media -->
@@ -208,13 +209,10 @@
 
     <!-- Copyright -->
     <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
-        © 2024 Copyright:
-        <a class="text-body" href="#">FurryNet.com</a>
+        © {{ date('Y') }} Copyright:
+        <a class="text-body" href="#">{{ env('APP_NAME') }}</a>
       </div>
       <!-- Copyright -->
     </footer>
-
-    <!-- JS -->
-    <!-- JS end -->
 </body>
 </html>

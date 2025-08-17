@@ -45,7 +45,7 @@ class CommentController extends Controller
         ]);
 
         $data = [
-            'post_id' => $data['post'],
+            'post_id' => (int)$data['post'],
             'description' => $data['text'],
             'user_id' => auth()->user()->id,
         ];

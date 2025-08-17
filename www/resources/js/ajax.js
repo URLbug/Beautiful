@@ -1,27 +1,34 @@
-$(document).ready(function(){
-    $('[data-like]').submit(function(event){
-        event.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+    const likeForms = document.querySelectorAll('[data-like]');
 
-        var url = $(this).attr('data-action');
+    likeForms.forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
 
-        $.ajax({
-            url: url,
-            method: 'POST',
-            data: new FormData($(this)[0]),
-            dataType: 'JSON',
-            contentType: false,
-            cache: false,
-            processData: false,
-            success:function(response)
-            {
-                $('#likes-' + response.id).html('<i class="fa-solid fa-heart"></i>' + response.likes + ' Like');
-            },
-            error: function(response) {
-                console.log(response);
-            }
+            const url = form.getAttribute('data-action');
+            const formData = new FormData(form);
+
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest' // Для Laravel может потребоваться
+                },
+                credentials: 'same-origin'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const likesElement = document.getElementById('likes-' + data.id);
+                    if (likesElement) {
+                        likesElement.innerHTML = `<i class="fa-solid fa-heart"></i> ${data.likes} Like`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            return false;
         });
-
-        return false;
     });
-
 });

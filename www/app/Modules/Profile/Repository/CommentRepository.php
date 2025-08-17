@@ -16,9 +16,9 @@ class CommentRepository implements CommentRepositoryInterface
     public static function save(array $data): bool
     {
         if(
-            isset($data['user_id']) ||
-            isset($data['post_id']) ||
-            isset($data['description'])
+            !isset($data['user_id']) ||
+            !isset($data['post_id']) ||
+            !isset($data['description'])
         ) {
             throw new \InvalidArgumentException('Required (user_id, post_id, description) parameters is missing');
         }

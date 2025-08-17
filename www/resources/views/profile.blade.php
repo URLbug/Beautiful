@@ -61,7 +61,7 @@
                             <h6 class="mb-0">My Socialnetwork:</h6>
                         </div>
                         </div>
-                        @if(isset($user->socialnetworks))
+                        @if(isset($user->socialnetworks) && array_values($user->socialnetworks) !== [null, null, null, null, null,])
                             <div class="row">
                                 <div class="col-sm-3">
                                     @foreach ($user->socialnetworks as $key => $val)
@@ -69,26 +69,19 @@
                                             @switch($key)
                                                 @case('patreon')
                                                     <a href="{{ $val }}" class="btn group-idk"><i class="fa-brands fa-patreon"></i> Patreon</a>
-
                                                     @break
                                                 @case('github')
                                                     <a href="{{ $val }}" class="btn group-idk"><i class="fa-brands fa-github"></i> Github</a>
-
                                                     @break
                                                 @case('discord')
                                                     <a href="{{ $val }}" class="btn group-idk"><i class="fa-brands fa-discord"></i> Discord</a>
-
                                                     @break
                                                 @case('twitter')
                                                     <a href="{{ $val }}" class="btn group-idk"><i class="fa-brands fa-twitter"></i> Twitter</a>
-
                                                     @break
                                                 @case('tiktok')
                                                     <a href="{{ $val }}" class="btn group-idk"><i class="fa-brands fa-tiktok"></i> TikTok</a>
-
-
                                                     @break
-
                                             @endswitch
                                         @endif
                                     @endforeach
