@@ -44,8 +44,8 @@
                             </form>
                         </div>
                         <div class="col-3">
-                            <input type="hidden" id="in01" value="{{ route('profile.posts', ['id' => $post->id]) }}" readonly>
-                            <button class="btn-unstyled" id="btn01" data-clipboard-target="#in01">
+                            <input type="hidden" id="in0{{ $post->id }}" value="{{ route('profile.posts', ['id' => $post->id]) }}" readonly>
+                            <button class="btn-unstyled js-share" data-clipboard-target="#in0{{ $post->id }}">
                                 <i class="fa-solid fa-share"></i> Share
                             </button>
                         </div>
@@ -69,7 +69,7 @@
                             @php
                                $isLike = $comment->like()->where('user_id', auth()->user()->id)->first();
                             @endphp
-                            <div class="d-flex justify-content-center py-2">
+                            <div class="d-flex justify-content-center py-2" id="comment{{ $comment->id }}">
                                 <div class="flex-grow-1 ms-3 py-4 px-4 border">
                                     <div class="d-flex justify-content-between row">
                                         <div class="col-md-4">
@@ -98,6 +98,13 @@
                                                     <i class="fa-solid fa-heart"></i> {{ count($comment->like) }} Like
                                                 </button>
                                             </form>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <input type="hidden" id="in0{{ $comment->id }}" value="{{ route('profile.posts', ['id' => $post->id]) }}#comment{{$comment->id}}" readonly>
+                                            <button class="btn-unstyled js-share" data-clipboard-target="#in0{{ $comment->id }}">
+                                                <i class="fa-solid fa-share"></i> Share
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

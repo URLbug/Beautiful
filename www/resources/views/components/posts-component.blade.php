@@ -60,8 +60,8 @@
                         </div>
 
                         <div class="col-sm">
-                            <input type="hidden" id="in01" value="{{ route('profile.posts', ['id' => $post->id]) }}" readonly>
-                            <button class="btn-unstyled" id="btn01" data-clipboard-target="#in01"><i class="fa-solid fa-share"></i> Share</button>
+                            <input type="hidden" id="in0{{ $post->id }}" value="{{ route('profile.posts', ['id' => $post->id]) }}" readonly>
+                            <button class="btn-unstyled js-share" data-clipboard-target="#in0{{ $post->id }}"><i class="fa-solid fa-share"></i> Share</button>
                         </div>
                     </div>
                 </div>
