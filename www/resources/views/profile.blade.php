@@ -10,9 +10,9 @@
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
                         @if(!isset($user->picture))
-                            <img src="{{ asset('/img/none-avatar.png') }}" class="rounded-circle" width="150">
+                            <img src="{{ asset('/img/none-avatar.png') }}" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
                         @else
-                            <img src="{{ $user->picture }}" alt="" class="rounded-circle" width="150">
+                            <img src="{{ $user->picture }}" alt="" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
                         @endif
                         <div class="mt-3">
                             <h4>{{ $username }}</h4>

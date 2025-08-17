@@ -79,6 +79,7 @@ class CommentController extends Controller
         return response()->json([
             'id' => $id,
             'likes' => CommentRepository::getById($id)->like()->count(),
+            'status' => 'liked',
             'code' => 200,
         ]);
     }
@@ -96,6 +97,7 @@ class CommentController extends Controller
         return response()->json([
             'id' => $commentId,
             'likes' => CommentRepository::getById($commentId)->like()->count(),
+            'status' => 'unliked',
             'code' => 200,
         ]);
     }

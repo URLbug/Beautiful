@@ -2,6 +2,7 @@
     @foreach($posts as $post)
         @php
             $user = $post->user()->first();
+            $isLike = $post->like()->where('user_id', auth()->user()->id)->first();
         @endphp
         <div class="row">
             <div class="card responsive-element mb-5 detail-hover" style="width: 45rem">
@@ -46,7 +47,7 @@
                                 @csrf
                                 @method('POST')
                                 <input type="hidden" id="id-form" value="like-form-{{ $post->id }}">
-                                <button class="btn-unstyled" id="likes-{{ $post->id }}">
+                                <button class="btn-unstyled {{ $isLike !== null ? 'text-primary' : '' }}" id="likes-{{ $post->id }}">
                                     <i class="fa-solid fa-heart"></i> {{ count($post->like) }} Like
                                 </button>
                             </form>

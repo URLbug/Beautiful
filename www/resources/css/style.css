@@ -187,14 +187,7 @@ a.posts {
 }
 
 main {
-    padding-top: 56px; /* Высота навбара по умолчанию */
-}
-
-/* Для мобильных устройств с открытым меню */
-@media (max-width: 991.98px) {
-    main.navbar-expanded {
-        padding-top: 200px !important; /* Увеличиваем отступ */
-    }
+    padding-top: 29px; /* Высота навбара по умолчанию */
 }
 
 @media (max-width: 1200px) {

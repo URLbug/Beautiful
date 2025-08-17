@@ -22,6 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     const likesElement = document.getElementById('likes-' + data.id);
                     if (likesElement) {
                         likesElement.innerHTML = `<i class="fa-solid fa-heart"></i> ${data.likes} Like`;
+
+                        if(data.status === 'liked') {
+                            likesElement.classList.add('text-primary');
+                        } else {
+                            likesElement.classList.remove('text-primary')
+                        }
                     }
                 })
                 .catch(error => {

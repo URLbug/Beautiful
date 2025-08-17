@@ -14,8 +14,8 @@
       <!-- header -->
       <header>
         <!-- menu -->
-        <div class="main-menu" id="navbar">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="main-menu fixed-top" id="navbar">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
                 <a class="navbar-brand" href="{{ route('master.home') }}">
                     <i class="fa-brands fa-wolf-pack-battalion"></i> {{ env('APP_NAME') }}
@@ -75,24 +75,23 @@
                     </div>
                 </div>
             </nav>
+            @if(Session::has('success'))
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <strong>Success !</strong> {{ session('success') }}
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <strong>Error !</strong> {{ $errors->first() }}
+                </div>
+            @endif
         </div>
         <!-- menu end -->
     </header>
     <!-- header end -->
 
     <main class="mt-5">
-      @if(Session::has('success'))
-          <div class="alert alert-success alert-dismissible" role="alert">
-              <strong>Success !</strong> {{ session('success') }}
-          </div>
-      @endif
-
-      @if($errors->any())
-          <div class="alert alert-danger alert-dismissible" role="alert">
-              <strong>Error !</strong> {{ $errors->first() }}
-          </div>
-      @endif
-
       @yield('content')
     </main>
 
