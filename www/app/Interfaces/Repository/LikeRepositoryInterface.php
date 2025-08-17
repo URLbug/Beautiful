@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 interface LikeRepositoryInterface extends RepositoryInterface
 {
     static function getLikesByPost(int $postId, int $userId): ?Model;
+    static function getLikesByComment(int $commentId, int $userId): ?Model;
 }

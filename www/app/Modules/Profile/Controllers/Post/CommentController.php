@@ -5,6 +5,8 @@ namespace App\Modules\Profile\Controllers\Post;
 use App\Http\Controllers\Controller;
 use App\Modules\Profile\Models\Comment;
 use App\Modules\Profile\Models\Like;
+use App\Modules\Profile\Repository\CommentRepository;
+use App\Modules\Profile\Repository\LikeRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,100 +19,84 @@ class CommentController extends Controller
         {
             if($id !== 0 && $request->ajax())
             {
-                return $this->storeLike($id);
+                return $this->store($request, $id);
             }
 
-            return $this->storeComment($request);
+            return $this->store($request);
         }
 
         return back();
     }
 
-    function getComment($id): ?Comment
+    function store(Request $request, ?int $id = null): RedirectResponse|JsonResponse
     {
-        $comment = Comment::query()
-        ->where('id', $id);
-
-        if(isset($comment))
-        {
-            return $comment->first();
+        if($id !== null) {
+            return $this->like($id);
         }
 
-        return null;
+        return $this->create($request);
     }
 
-    function storeComment(Request $request): RedirectResponse
+    function create(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'text' => 'required|string|max:250',
             'post' => 'required|numeric|not_in:0|min:0'
         ]);
 
-        $comment = new Comment;
+        $data = [
+            'post_id' => $data['post'],
+            'description' => $data['text'],
+            'user_id' => auth()->user()->id,
+        ];
 
-        $comment->user_id = auth()->user()->id;
-        $comment->post_id = $data['post'];
-        $comment->description = $data['text'];
+        if(!CommentRepository::save($data)) {
+            return back()->withErrors('Comment could not be created');
+        }
 
-        $comment->save();
-
-        return back();
+        return back()->with('success', "Comment created");
     }
 
-    function unLike(int $id): JsonResponse
+    function like(int $id): JsonResponse
     {
-        $like = $this->isLike($id);
+        $like = LikeRepository::getLikesByComment($id, auth()->user()->id);
+        if(isset($like) && !$like->isDirty()) {
+            return $this->unLike($id, $like->id);
+        }
 
-        if(!isset($like))
-        {
-            return response()->json([
-                'message' => 'error',
-                'code' => 500,
+        $data = [
+            'comment_id' => $id,
+            'user_id' => auth()->user()->id,
+        ];
+
+        if(!LikeRepository::save($data)) {
+            return response(status: 500)->json([
+                'message' => "Like could not be created",
+                'status' => 500
             ]);
         }
 
-        Like::query()
-        ->where('comment_id', $id)
-        ->where('user_id', auth()->user()->id)
-        ->delete();
-
         return response()->json([
             'id' => $id,
-            'likes' => count($this->getComment($id)->like->toArray()),
+            'likes' => CommentRepository::getById($id)->like()->count(),
             'code' => 200,
         ]);
     }
 
-    function storeLike(int $id): JsonResponse
+    function unLike(int $commentId, int $likeId): JsonResponse
     {
-        $like = $this->isLike($id);
-
-        if(isset($like))
-        {
-            return $this->unLike($id);
+        $isRemove = LikeRepository::remove(['id' => $likeId,]);
+        if(!$isRemove) {
+            return response(status: 500)->json([
+                'message' => 'Remove failed',
+                'status' => 500,
+            ]);
         }
 
-        $like = new Like;
-
-        $like->comment_id = $id;
-        $like->user_id = auth()->user()->id;
-
-        $like->save();
-
         return response()->json([
-            'id' => $id,
-            'likes' => count($this->getComment($id)->like->toArray()),
+            'id' => $commentId,
+            'likes' => CommentRepository::getById($commentId)->like()->count(),
             'code' => 200,
-        ]);;
-    }
-
-    private function isLike(int $id): ?Like
-    {
-        $like = Like::query()
-        ->where('comment_id', $id)
-        ->where('user_id', auth()->user()->id)
-        ->first();
-
-        return $like;
+        ]);
     }
 }
