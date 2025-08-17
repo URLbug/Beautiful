@@ -11,6 +11,7 @@ use App\Modules\S3Storage\Lib\S3Storage;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ProfileController extends Controller
 {
@@ -23,31 +24,37 @@ class ProfileController extends Controller
             return $this->update($request);
         }
 
-        if($request->isMethod('POST')) {
-            return $this->store($username);
-        }
-
         $user = UserRepository::getByUsername($username);
         if($user->isDirty()) {
             abort(404);
         }
 
-        return view('profile', [
-            'username' => $username,
+        if($request->isMethod('POST')) {
+            return $this->store($user);
+        }
+
+        return $this->show($user);
+    }
+
+    function show(User $user): View
+    {
+        $dynamicData = [
+            'username' => $user->username,
             'user' => $user,
-            'posts' => $user->post()->orderByDesc('posts.id')->get(),
+            'posts' => Cache::remember("user_posts_{$user->id}", now()->addMinutes(15), function() use ($user) {
+                return $user->post()->orderByDesc('posts.id')->limit(100)->get();
+            }),
             'followers' => FollowerRepository::getByFollowers($user->id),
             'following' => FollowerRepository::getByFollowing($user->id),
             'isFollower' => FollowerRepository::getFirst($user->id, false),
-        ]);
+        ];
+
+        return view('profile', $dynamicData);
     }
 
-    function store(string $username): RedirectResponse
+    function store(User $user): RedirectResponse
     {
-        $user = UserRepository::getByUsername($username);
-        if($user->isDirty()) {
-            return back()->withErrors("User $username not found");
-        }
+        $username = $user->username;
 
         $follower = FollowerRepository::getFirst($user->id, auth()->user()->id);
         if($follower !== null) {
@@ -133,4 +140,5 @@ class ProfileController extends Controller
 
         return back()->with('success', "Profile updated successfully");
     }
+
 }
