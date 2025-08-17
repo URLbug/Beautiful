@@ -50,26 +50,25 @@ class ProfileController extends Controller
         $user = User::query()
         ->where('username', $username);
 
-        $follower = Follower::query()
-        ->where('following_id', $user->first()->id)
-        ->where('follower_id', auth()->user()->id)
-        ->first();
+        if(!$user->exists()) {
+            return back()->withErrors("User $username not found");
+        }
 
-        if(
-            !$user->exists() ||
-            $follower !== null
-        ) {
+        $follower = FollowerRepository::getFirst($user->first()->id, auth()->user()->id);
+        if($follower !== null) {
             return $this->unflower($username);
         }
 
-        $follower = new Follower;
+        $isSave = FollowerRepository::save([
+            'follower_id' => auth()->user()->id,
+            'following_id' => $user->first()->id,
+        ]);
 
-        $follower->follower_id = auth()->user()->id;
-        $follower->following_id = $user->first()->id;
+        if($isSave) {
+            return back()->with('success', "Follower $username successfully");
+        }
 
-        $follower->save();
-
-        return back();
+        return back()->withErrors("Something went wrong");
     }
 
     function unflower(string $username): RedirectResponse
@@ -77,21 +76,21 @@ class ProfileController extends Controller
         $user = User::query()
         ->where('username', $username);
 
-        $follower = Follower::query()
-        ->where('follower_id', auth()->user()->id);
-
-        if(
-            !$user->exists() ||
-            $follower->first()->toArray() === []
-        ) {
-            return back();
+        $follower = FollowerRepository::getFirst($user->first()->id, auth()->user()->id);
+        if($follower->isDirty()) {
+            return back()->with('success', "Unfollow $username successfully");
         }
 
-        $follower = $follower
-        ->where('following_id', $user->first()->id)
-        ->delete();
+        $isRemove = FollowerRepository::remove([
+            'following_id' => auth()->user()->id,
+            'follower_id' => $user->first()->id,
+        ]);
 
-        return back();
+        if($isRemove) {
+            return back()->with('success', "Unfollow $username successfully");
+        }
+
+        return back()->withErrors("Something went wrong");
     }
 
     function update(Request $request): RedirectResponse
