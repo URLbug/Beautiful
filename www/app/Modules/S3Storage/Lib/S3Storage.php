@@ -28,7 +28,7 @@ class S3Storage implements S3StorageInterface
 
         return str_replace(
             $replaceString,
-            $arrayEndpoints[0] . ':'  . '//localhost',
+            env('APP_URL'),
             Storage::cloud()->url($name)
         );
     }
