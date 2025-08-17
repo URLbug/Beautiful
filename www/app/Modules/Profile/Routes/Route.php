@@ -30,8 +30,5 @@ class Route extends \Illuminate\Support\Facades\Route
         self::post('/comment/{id?}', 'Post\CommentController@index')
         ->name('profile.comment')
         ->defaults('id', 0);
-
-        self::post('/search', 'SearchController@index')
-        ->name('profile.search');
     }
 }

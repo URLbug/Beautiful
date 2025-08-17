@@ -57,7 +57,7 @@
                               <i class="fa-solid fa-pen-to-square"></i>
                             </button>
 
-                            <form action="{{ route('profile.search') }}" method="POST" class="p-2 d-flex">
+                            <form action="{{ route('search.home') }}" method="POST" class="p-2 d-flex">
                                 @csrf
                                 @method('POST')
 

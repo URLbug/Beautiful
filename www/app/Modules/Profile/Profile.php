@@ -23,7 +23,6 @@ class Profile implements ModuleInterface
     public function registerRoutes(): ModuleInterface
     {
         Route::index();
-
         return $this;
     }
 

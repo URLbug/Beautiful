@@ -15,21 +15,17 @@ class PostController extends Controller
 {
     function index(int $id, Request $request): View|JsonResponse|RedirectResponse
     {
-        if($id !== 0)
-        {
-            if($request->isMethod('POST') && $request->ajax())
-            {
+        if($id !== 0) {
+            if($request->isMethod('POST') && $request->ajax()) {
                 return $this->storeLike($id);
             }
 
             $post = $this->getPost($id);
-
-            if(!isset($post))
-            {
+            if(!isset($post)) {
                 abort(404);
             }
 
-            return view('posts.detail_posts', [
+            return view('posts.detail', [
                 'post' => $post,
             ]);
         }
