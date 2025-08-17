@@ -41,7 +41,7 @@ class ProfileController extends Controller
         $dynamicData = [
             'username' => $user->username,
             'user' => $user,
-            'posts' => Cache::remember("user_posts_{$user->id}", now()->addMinutes(15), function() use ($user) {
+            'posts' => Cache::remember("user_posts_{$user->id}", now()->addMinutes(10), function() use ($user) {
                 return $user->post()->orderByDesc('posts.id')->limit(100)->get();
             }),
             'followers' => FollowerRepository::getByFollowers($user->id),

@@ -13,13 +13,13 @@ final class UserRepository implements UserRepositoryInterface
 {
     public static function save(array $data): bool
     {
-        if(!isset($data['password']) || !isset($data['name']) || !isset($data['email'])) {
+        if(!isset($data['password']) || !isset($data['username']) || !isset($data['email'])) {
             throw new InvalidArgumentException('Required (password, name, email) parameter is missing');
         }
 
         $user = new User;
 
-        $user->name = $data['name'];
+        $user->username = $data['username'];
         $user->email = $data['email'];
         $user->password = $data['password'];
 
