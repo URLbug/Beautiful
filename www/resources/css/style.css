@@ -188,6 +188,23 @@ a.posts {
 
 main {
     padding-top: 29px; /* Высота навбара по умолчанию */
+    flex: 1 0 auto; /* Растягиваем контент */
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 150vh;
+}
+
+footer {
+    flex-shrink: 0; /* Фиксируем футер */
+    margin-top: auto; /* Прижимаем вниз */
 }
 
 @media (max-width: 1200px) {
