@@ -30,10 +30,7 @@ jobs:
           sudo docker-compose run php composer update &&
           sudo docker-compose run php composer upgrade &&
           sudo docker-compose run php composer install &&
-          sudo docker-compose run php php artisan migrate &&
-          cd $(pwd)/www &&
-          sudo docker-compose run npm install &&
-          sudo docker-compose run npm run build
+          sudo docker-compose run php php artisan migrate
       
       - name: Make seed
         run: sudo docker-compose exec php artisan db:seed
