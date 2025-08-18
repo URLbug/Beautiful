@@ -18,14 +18,16 @@ jobs:
           sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose &&
           docker-compose --version
 
-      - name: Full build app
-        run: make full-build
-      
-      - name: Add admin
-        run: sudo chown -R 777 ./src
+      - name: Build app
+        run:
+          sudo docker-compose up -d --build &&
+          sudo docker-compose exec php composer install &&
+          sudo docker-compose exec php artisan migrate &&
+          sudo docker-compose run npm install &&
+          sudo docker-compose run npm run build
       
       - name: Make seed
-        run: make php-artisan o="db:seed"
+        run: sudo docker-compose exec php artisan db:seed
       
       - name: Testing app
-        run: make start && make test
+        run: sudo docker-compose exec php artisan test

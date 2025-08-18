@@ -65,6 +65,15 @@ services:
     networks:
       - beautiful-net
 
+  npm:
+    image: node:18.20
+    working_dir: /var/www
+    volumes:
+      - ./www:/var/www
+    command: [ "npm" ]
+    networks:
+      - beautiful-net
+
   adminer:
     image: adminer
     ports:
