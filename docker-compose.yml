@@ -7,8 +7,11 @@ services:
       dockerfile: ./etc/nginx/nginx.Dockerfile
     ports:
       - '80:80'
+      - '443:443'
     volumes:
       - ./www:/var/www
+      - ./certbot/www/:/var/www/certbot
+      - ./certbot/conf/:/etc/letsencrypt/
     depends_on:
       - php
     networks:
@@ -66,13 +69,11 @@ services:
     networks:
       - beautiful-net
 
-  npm:
-    image: node:18.20
-    depends_on:
-      - php
+  certbot:
+    image: certbot/certbot:latest
     volumes:
-      - ./www:/var/www
-    command: [ "npm" ]
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
     networks:
       - beautiful-net
 

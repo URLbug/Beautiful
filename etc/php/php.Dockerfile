@@ -30,9 +30,9 @@ RUN docker-php-ext-configure gd \
     && docker-php-ext-install gd \
     && docker-php-ext-install pdo pdo_pgsql mbstring zip exif pcntl bcmath opcache
 
-RUN chown 1000:1000 -R /var/www
+RUN chown 33:33 -R /var/www
 RUN find . -type d -exec chmod 775 {} \; && \
     find . -type f -exec chmod 664 {} \;
 
-USER 1000
+USER 33
 CMD ["php-fpm"]
