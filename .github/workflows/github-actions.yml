@@ -20,7 +20,7 @@ jobs:
 
       - name: Create .env
         run:
-          cp $(pwd)/etc/postgresql/env.example $(pwd)/etc/postgresql/.env
+          cp $(pwd)/etc/postgresql/env.example $(pwd)/etc/postgresql/.env &&
           cp $(pwd)/www/.env.example $(pwd)/www/.env
 
       - name: Build app
