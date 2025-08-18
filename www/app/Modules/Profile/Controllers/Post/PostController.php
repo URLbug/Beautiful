@@ -82,6 +82,7 @@ class PostController extends Controller
             'name' => $data['name'],
             'description' => $data['description'],
             'file' => $file,
+            'user_id' => auth()->user()->id,
         ];
 
         if(!PostRepository::save($data)) {
@@ -120,6 +121,7 @@ class PostController extends Controller
         return response()->json([
             'id' => $id,
             'likes' => PostRepository::getById($id)->like()->count(),
+            'status' => 'liked',
             'code' => 200,
         ]);
     }
@@ -137,6 +139,7 @@ class PostController extends Controller
         return response()->json([
             'id' => $postId,
             'likes' => PostRepository::getById($postId)->like()->count(),
+            'status' => 'unlike',
             'code' => 200,
         ]);
     }

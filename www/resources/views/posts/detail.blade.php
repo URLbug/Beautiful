@@ -1,53 +1,111 @@
 @extends('app.app')
 
 @section('content')
+    @php
+        $isLike = $post->like()->where('user_id', auth()->user()->id)->first();
+    @endphp
     <div class="container">
         <div class="main-body">
             <div class="row">
                 <div class="col-md-6">
-                    <img class="img-fluid" src="{{ $post->file }}" alt="">
+                    <img class="img-fluid rounded-1 mb-2" src="{{ $post->file }}" alt="Post">
                 </div>
 
                 <div class="col-md-5">
-                    <div class="text-center">
-                        <h1>{{ $post->name }}</h1>
-                    </div>
-                    <h5>description:</h4>
-                    <p>{{ $post->description }}</p>
-                    <div class="user">
-                        <div><img src="{{ $post->user->picture }}" width="18"><span class="text2"><a href="{{ route('profile.home', ['username' => $post->user->username]) }}">{{ $post->user->username }}</a></span></div>
+                    <div>
+                        @if($post->user->picture)
+                            <img src="{{ $post->user->picture }}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                        @else
+                            <img src="{{ asset('img/none-avatar.png') }}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                        @endif
+
+                        <span class="fw-bold">
+                            <a href="{{ route('profile.home', ['username' => $post->user->username,]) }}" class="text-decoration-none text-black">
+                                {{ $post->user->username }}
+                            </a>
+                        </span>
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                        <span>{{ $post->created_at->format('Y-m-d H:i') }}</span>
                     </div>
 
-                    <form method="POST" data-like="like-form-{{ $post->id }}" data-action="{{ route('profile.posts', ['id' => $post->id]) }}">
-                        @csrf
-                        @method('POST')
-                        <button class="btn btn-primary" id="likes-{{ $post->id }}"><i class="fa-solid fa-heart"></i>{{ count($post->like) }} Like</button>
-                    </form>
-                    <input type="hidden" id="in01" value="{{ route('profile.posts', ['id' => $post->id]) }}" readonly>
-                    <button class="btn btn-success" id="btn01" data-clipboard-target="#in01"><i class="fa-solid fa-share"></i> Share</button>
+                    <div class="text-start mt-3">
+                        <h2>{{ $post->name }}</h2>
+                        <p>{{ $post->description }}</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">
+                            <form method="POST" data-like="like-form-{{ $post->id }}" data-action="{{ route('profile.posts', ['id' => $post->id]) }}">
+                                @csrf
+                                @method('POST')
+                                <button class="btn-unstyled {{ $isLike ? 'text-primary' : '' }}" id="likes-{{ $post->id }}">
+                                    <i class="fa-solid fa-heart"></i> {{ count($post->like) }} Like
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-3">
+                            <input type="hidden" id="in0{{ $post->id }}" value="{{ route('profile.posts', ['id' => $post->id]) }}" readonly>
+                            <button class="btn-unstyled js-share" data-clipboard-target="#in0{{ $post->id }}">
+                                <i class="fa-solid fa-share"></i> Share
+                            </button>
+                        </div>
+                    </div>
 
                     <div class="container justify-content-center mt-5 border-left border-right">
-                        <form action="{{ route('profile.comment', ['id' => 0]) }}" method="POST">
-                            @csrf
-                            @method('POST')
+                        <div class="mb-5">
+                            <form action="{{ route('profile.comment', ['id' => 0]) }}" method="POST">
+                                @csrf
+                                @method('POST')
 
-                            <input type="hidden" name="post" value="{{ $post->id }}">
-                            <div class="d-flex justify-content-center pt-3 pb-2"> <input type="text" name="text" placeholder="+ Add a note" class="form-control addtxt"> </div>
-                        </form>
+                                <input type="hidden" name="post" value="{{ $post->id }}">
+                                <div class="d-flex justify-content-center pt-3 pb-2">
+                                    <textarea type="text" name="text" class="form-control" style="max-height: 200px" placeholder="Comment..."></textarea>
+                                </div>
+                                <input type="submit" class="btn btn-primary" value="+Add a comment">
+                            </form>
+                        </div>
 
                         @foreach($post->comment()->get() as $comment)
-                            <div class="d-flex justify-content-center py-2">
-                                <div class="second py-2 px-2"> <span class="text1">{{ $comment->description }}</span>
-                                    <div class="d-flex justify-content-between py-1 pt-2">
-                                        <div><img src="{{ $comment->user->picture }}" width="18"><span class="text2"><a href="{{ route('profile.home', ['username' => $comment->user->username, ]) }}">
-                                            {{ $comment->user->username }}
-                                        </a></span></div>
+                            @php
+                               $isLike = $comment->like()->where('user_id', auth()->user()->id)->first();
+                            @endphp
+                            <div class="d-flex justify-content-center py-2" id="comment{{ $comment->id }}">
+                                <div class="flex-grow-1 ms-3 py-4 px-4 border">
+                                    <div class="d-flex justify-content-between row">
+                                        <div class="col-md-4">
+                                            @if($comment->user->picture)
+                                                <img src="{{ $comment->user->picture }}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                            @else
+                                                <img src="{{ asset('img/none-avatar.png') }}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                            @endif
 
-                                        <form method="POST" data-like="like-form-{{ $comment->id }}" data-action="{{ route('profile.comment', ['id' => $comment->id]) }}">
-                                            @csrf
-                                            @method('POST')
-                                            <button class="btn btn-primary" id="likes-{{ $comment->id }}"><i class="fa-solid fa-heart"></i>{{ count($comment->like) }} Like</button>
-                                        </form>
+                                            <span class="fw-bold">
+                                                <a href="{{ route('profile.home', ['username' => $comment->user->username,]) }}" class="text-decoration-none text-black">
+                                                    {{ $comment->user->username }}
+                                                </a>
+                                            </span>
+                                        </div>
+
+                                        <div class="mb-2 mt-2">
+                                            <span class="text-black">{{ $comment->description }}</span>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <form method="POST" data-like="like-form-{{ $comment->id }}" data-action="{{ route('profile.comment', ['id' => $comment->id]) }}">
+                                                @csrf
+                                                @method('POST')
+                                                <button class="btn-unstyled {{ $isLike !== null ? 'text-primary' : '' }}" id="likes-{{ $comment->id }}">
+                                                    <i class="fa-solid fa-heart"></i> {{ count($comment->like) }} Like
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <input type="hidden" id="in0{{ $comment->id }}" value="{{ route('profile.posts', ['id' => $post->id]) }}#comment{{$comment->id}}" readonly>
+                                            <button class="btn-unstyled js-share" data-clipboard-target="#in0{{ $comment->id }}">
+                                                <i class="fa-solid fa-share"></i> Share
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
