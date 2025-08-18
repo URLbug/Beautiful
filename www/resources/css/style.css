@@ -14,7 +14,7 @@ a.group-idk:hover{
 a.posts {
     position: relative;
   }
-  
+
 .title-post {
     position: absolute;
     margin-top: -100px;
@@ -87,11 +87,11 @@ a.posts {
     -webkit-user-select: none;
     touch-action: manipulation;
   }
-  
+
   .button-53:focus {
     outline: 0;
   }
-  
+
   .button-53:after {
     content: '';
     position: absolute;
@@ -101,12 +101,12 @@ a.posts {
     width: calc(100% - 1px);
     height: calc(100% - 1px);
   }
-  
+
   .button-53:hover:after {
     bottom: 2px;
     left: 2px;
   }
-  
+
   @media (min-width: 768px) {
     .button-53 {
       padding: .75rem 3rem;
@@ -168,4 +168,38 @@ a.posts {
     max-height: 400px;
     width: auto;
     height: auto;
+}
+
+.btn-unstyled {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: inherit; /* или любой другой цвет */
+    font: inherit;
+    cursor: pointer;
+    outline: none; /* Убирает синюю рамку при фокусировке */
+    box-shadow: none; /* Убирает тень при фокусировке */
+}
+
+.detail-hover:hover {
+    background-color: #d9dbde;
+}
+
+main {
+    padding-top: 29px; /* Высота навбара по умолчанию */
+}
+
+@media (max-width: 1200px) {
+    .responsive-element {
+        width: 100%;
+        max-width: 25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .responsive-element {
+        width: 100%;
+        max-width: 18rem;
+    }
 }
