@@ -26,6 +26,8 @@ jobs:
       - name: Build app
         run:
           sudo docker-compose up -d --build &&
+          sudo docker-compose run php composer update &&
+          sudo docker-compose run php composer upgrade &&
           sudo docker-compose run php composer install &&
           sudo docker-compose run php php artisan migrate &&
           sudo docker-compose run npm install &&
