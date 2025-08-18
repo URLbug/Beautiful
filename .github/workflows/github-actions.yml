@@ -33,7 +33,7 @@ jobs:
           sudo docker-compose run php php artisan migrate
       
       - name: Make seed
-        run: sudo docker-compose run php artisan db:seed
+        run: sudo docker-compose run php php artisan db:seed
       
       - name: Testing app
-        run: sudo docker-compose run php artisan test
+        run: sudo docker-compose run php php artisan test
