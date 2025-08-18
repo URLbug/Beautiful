@@ -3,6 +3,7 @@
 namespace App\Modules\Profile\Models;
 
 use App\Modules\Master\Models\User;
+use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,5 +33,10 @@ class Post extends Model
     function like(): HasMany
     {
         return $this->hasMany(Like::class);
+    }
+
+    protected static function newFactory(): PostFactory
+    {
+        return PostFactory::new();
     }
 }

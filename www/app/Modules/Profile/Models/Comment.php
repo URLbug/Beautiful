@@ -3,6 +3,7 @@
 namespace App\Modules\Profile\Models;
 
 use App\Modules\Master\Models\User;
+use Database\Factories\CommentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,5 +32,10 @@ class Comment extends Model
     function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);
+    }
+
+    protected static function newFactory(): CommentFactory
+    {
+        return CommentFactory::new();
     }
 }

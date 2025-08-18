@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Modules\Profile\Models\Like;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class LikeFactory extends Factory
 {
+    protected $model = Like::class;
     /**
      * Define the model's default state.
      *

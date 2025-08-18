@@ -6,6 +6,7 @@ use App\Modules\Profile\Models\Comment;
 use App\Modules\Profile\Models\Follower;
 use App\Modules\Profile\Models\Like;
 use App\Modules\Profile\Models\Post;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -79,5 +80,10 @@ class User extends Authenticatable
             'password' => 'hashed',
             'socialnetworks' => 'array',
         ];
+    }
+
+    protected static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
     }
 }

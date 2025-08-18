@@ -3,6 +3,7 @@
 namespace App\Modules\Profile\Models;
 
 use App\Modules\Master\Models\User;
+use Database\Factories\LikeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +31,11 @@ class Like extends Model
     function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    protected static function newFactory(): LikeFactory
+    {
+        return LikeFactory::new();
     }
 
 }
