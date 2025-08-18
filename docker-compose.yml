@@ -68,7 +68,8 @@ services:
 
   npm:
     image: node:18.20
-    working_dir: /var/www
+    depends_on:
+      - php
     volumes:
       - ./www:/var/www
     command: [ "npm" ]
