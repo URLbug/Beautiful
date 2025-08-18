@@ -18,6 +18,11 @@ jobs:
           sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose &&
           docker-compose --version
 
+      - name: Create .env
+        run:
+          cp $(pwd)/etc/postgresql/env.example $(pwd)/etc/postgresql/.env
+          cp $(pwd)/www/.env.example $(pwd)/www/.env
+
       - name: Build app
         run:
           sudo docker-compose up -d --build &&
