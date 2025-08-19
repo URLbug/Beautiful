@@ -8,7 +8,7 @@ use App\Modules\Master\Routes\Route;
 class Master implements ModuleInterface
 {
     private $name = 'Master';
-    private $version = '0.0.1';
+    private $version = '0.0.2';
 
     public function enable(): bool
     {

@@ -53,6 +53,11 @@
                                   </a>
                               </li>
                             @endif
+                            <li class="nav-item">
+                                <a class="nav-link {{ str_contains(url()->current(), '/about') ? 'active' : ''}}" href="{{ route('master.about') }}">
+                                    About
+                                </a>
+                            </li>
                         </ul>
 
                         {{-- The `search` should also be displayed for auth. users --}}
