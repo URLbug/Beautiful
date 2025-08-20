@@ -96,7 +96,7 @@
     </header>
     <!-- header end -->
 
-    <main class="mt-5">
+    <main class="mt-5" style="padding-bottom: 200px;">
       @yield('content')
     </main>
 
@@ -143,7 +143,7 @@
         </div>
     @endif
 
-    <footer class="text-center bg-body-tertiary mt-5" style="max-height: 250px">
+    <footer class="text-center bg-body-tertiary mt-5">
         <!-- Grid container -->
         <div class="container pt-4">
           <!-- Section: Social media -->
