@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-Requested-With': 'XMLHttpRequest', // Для Laravel может потребоваться
                     'X-CSRF-TOKEN': csrfToken,
                 },
-                credentials: 'same-origin'
             })
                 .then(response => response.json())
                 .then(data => {
