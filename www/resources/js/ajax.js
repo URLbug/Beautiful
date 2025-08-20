@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(form);
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            formData.append('_token', csrfToken);
 
             fetch(url, {
                 method: 'POST',
