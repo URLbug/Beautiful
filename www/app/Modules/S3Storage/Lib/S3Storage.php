@@ -24,7 +24,7 @@ class S3Storage implements S3StorageInterface
             return false;
         }
 
-        $replaceString = $arrayEndpoints[0] . ':' . $arrayEndpoints[1];
+        $replaceString = $arrayEndpoints[0] . ':' . $arrayEndpoints[1] . ':' . $arrayEndpoints[2];
 
         return str_replace(
             $replaceString,
