@@ -143,7 +143,7 @@
         </div>
     @endif
 
-    <footer class="text-center bg-body-tertiary">
+    <footer class="text-center bg-body-tertiary mt-5">
         <!-- Grid container -->
         <div class="container pt-4">
           <!-- Section: Social media -->
