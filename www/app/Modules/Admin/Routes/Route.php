@@ -17,24 +17,23 @@ class Route extends \Illuminate\Support\Facades\Route
 
     private static function routers(): void
     {
-        self::get('/', function(){
-            return view('admin.index');
-        });
+        self::get('/', 'AdminController@index')->name('admin.home');
 
-        self::get('/users', function(){
-            return view('admin.index');
-        });
+        self::match(
+            ['GET', 'POST', 'PATCH', 'DELETE',],
+            '/users', 'Contents\UsersAdminController@index')
+            ->name('admin.users');
 
         self::get('/roles', function(){
             return view('admin.index');
-        });
+        })->name('admin.roles');
 
         self::get('/post', function(){
             return view('admin.index');
-        });
+        })->name('admin.posts');
 
         self::get('/comments', function(){
             return view('admin.index');
-        });
+        })->name('admin.comments');
     }
 }

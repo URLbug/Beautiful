@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->date('email_verified_at')->nullable();
             $table->string('picture')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->json('socialnetworks')->nullable();
             $table->integer('role_id');
             $table->foreign('role_id')->references('id')->on('roles');
