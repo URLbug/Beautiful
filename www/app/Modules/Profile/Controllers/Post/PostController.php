@@ -65,7 +65,7 @@ class PostController extends Controller
     {
         $data = $request->validate([
             'name' => 'string|max:255|required',
-            'file' => 'image|max:1004|required',
+            'file' => 'image|max:10004|required',
             'description' => 'string|max:255|required',
         ]);
 
