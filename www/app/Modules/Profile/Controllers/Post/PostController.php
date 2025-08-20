@@ -64,9 +64,9 @@ class PostController extends Controller
     function create(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'name' => 'string|max:255',
-            'file' => 'image|max:1004',
-            'description' => 'string|max:255',
+            'name' => 'string|max:255|required',
+            'file' => 'image|max:1004|required',
+            'description' => 'string|max:255|required',
         ]);
 
         if(!S3Storage::putFile('/', $data['file'])) {
