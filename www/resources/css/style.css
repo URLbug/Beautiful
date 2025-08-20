@@ -186,10 +186,10 @@ a.posts {
     background-color: #d9dbde;
 }
 
-main {
-    padding-top: 29px; /* Высота навбара по умолчанию */
-    flex: 1 0 auto; /* Растягиваем контент */
-}
+/*main {*/
+/*    padding-top: 29px; !* Высота навбара по умолчанию *!*/
+/*    flex: 1 0 auto; !* Растягиваем контент *!*/
+/*}*/
 
 /*html, body {*/
 /*    height: 100%;*/
