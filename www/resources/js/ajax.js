@@ -14,8 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest', // Для Laravel может потребоваться
                     'X-CSRF-TOKEN': csrfToken,
                 },
             })
