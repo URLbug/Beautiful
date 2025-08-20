@@ -27,13 +27,13 @@ jobs:
         run:
           sudo docker-compose -f dev-docker-compose.yml up -d --build &&
           sudo chmod -R 777 $(pwd)/www &&
-          sudo docker-compose run php composer update &&
-          sudo docker-compose run php composer upgrade &&
-          sudo docker-compose run php composer install &&
-          sudo docker-compose run php php artisan migrate
+          sudo docker-compose -f dev-docker-compose.yml run php composer update &&
+          sudo docker-compose -f dev-docker-compose.yml run php composer upgrade &&
+          sudo docker-compose -f dev-docker-compose.yml run php composer install &&
+          sudo docker-compose -f dev-docker-compose.yml run php php artisan migrate
       
       - name: Make seed
-        run: sudo docker-compose run php php artisan db:seed
+        run: sudo docker-compose -f dev-docker-compose.yml run php php artisan db:seed
       
 #      - name: Testing app
 #        run: sudo docker-compose run php php artisan test
