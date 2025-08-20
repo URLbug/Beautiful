@@ -143,7 +143,7 @@
         </div>
     @endif
 
-    <footer class="text-center bg-body-tertiary mt-5">
+    <footer class="text-center bg-body-tertiary mt-5" style="max-height: 250px">
         <!-- Grid container -->
         <div class="container pt-4">
           <!-- Section: Social media -->
