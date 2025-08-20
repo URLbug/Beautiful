@@ -16,9 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: formData,
                 headers: {
                     'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest', // Для Laravel может потребоваться
+                    'X-Requested-With': 'XMLHttpRequest',
                     'X-CSRF-TOKEN': csrfToken,
                 },
+                credentials: 'include' // Важно для отправки кук
             })
                 .then(response => response.json())
                 .then(data => {
