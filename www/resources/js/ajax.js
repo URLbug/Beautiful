@@ -8,12 +8,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const url = form.getAttribute('data-action');
             const formData = new FormData(form);
 
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
             fetch(url, {
                 method: 'POST',
                 body: formData,
                 headers: {
                     'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest' // Для Laravel может потребоваться
+                    'X-Requested-With': 'XMLHttpRequest', // Для Laravel может потребоваться
+                    'X-CSRF-TOKEN': csrfToken,
                 },
                 credentials: 'same-origin'
             })
