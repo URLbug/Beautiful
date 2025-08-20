@@ -41,6 +41,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{{ route('admin.roles') }}" class="nav-link text-dark hover-primary">
+                            <i class="fa-solid fa-right-to-bracket fa-fw me-3"></i> Roles
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ route('master.home') }}" class="nav-link text-dark hover-primary">
                             <i class="fa-solid fa-right-to-bracket fa-fw me-3"></i> Public home
                         </a>

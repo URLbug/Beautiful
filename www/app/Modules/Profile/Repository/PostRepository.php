@@ -28,10 +28,9 @@ final class PostRepository implements PostRepositoryInterface
 
         $post = new Post;
 
-        $post->file = $data['file'];
-        $post->name = $data['name'];
-        $post->description = $data['description'];
-        $post->user_id = $data['user_id'];
+        foreach($data as $key => $value) {
+            $post->{$key} = $value;
+        }
 
         return $post->save();
     }

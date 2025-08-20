@@ -24,16 +24,19 @@ class Route extends \Illuminate\Support\Facades\Route
             '/users', 'Contents\UsersAdminController@index')
             ->name('admin.users');
 
-        self::get('/roles', function(){
-            return view('admin.index');
-        })->name('admin.roles');
+        self::match(
+            ['GET', 'POST', 'PATCH', 'DELETE',],
+            '/posts', 'Contents\PostsAdminController@index')
+            ->name('admin.posts');
 
-        self::get('/post', function(){
-            return view('admin.index');
-        })->name('admin.posts');
+        self::match(
+            ['GET', 'POST', 'PATCH', 'DELETE',],
+            '/roles', 'Contents\RolesAdminController@index')
+            ->name('admin.roles');
 
-        self::get('/comments', function(){
-            return view('admin.index');
-        })->name('admin.comments');
+        self::match(
+            ['GET', 'POST', 'PATCH', 'DELETE',],
+            '/comments', 'Contents\CommentsAdminController@index')
+            ->name('admin.comments');
     }
 }
