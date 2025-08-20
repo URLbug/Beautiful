@@ -44,8 +44,6 @@
                     <div class="row">
                         <div class="col-sm">
                             <form method="POST" data-like="like-form-{{ $post->id }}" data-action="{{ route('profile.posts', ['id' => $post->id]) }}">
-                                @csrf
-                                @method('POST')
                                 <input type="hidden" id="id-form" value="like-form-{{ $post->id }}">
                                 <button class="btn-unstyled {{ $isLike !== null ? 'text-primary' : '' }}" id="likes-{{ $post->id }}">
                                     <i class="fa-solid fa-heart"></i> {{ count($post->like) }} Like
