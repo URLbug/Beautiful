@@ -5,9 +5,9 @@ services:
     build:
       context: .
       dockerfile: ./etc/nginx/nginx.Dockerfile
+    container_name: beautiful-web
     ports:
-      - '80:80'
-      - '443:443'
+      - '4444:80'
     volumes:
       - ./www:/var/www
       - ./certbot/www/:/var/www/certbot
@@ -16,6 +16,7 @@ services:
       - php
     networks:
       - beautiful-net
+      - shared-network
   php:
     build: 
       context: .
@@ -87,6 +88,8 @@ services:
 networks:
   beautiful-net:
     driver: bridge
+  shared-network:
+    external: true
 
 volumes:
   volume-db:
