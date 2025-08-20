@@ -18,7 +18,7 @@ class UsersAdminController extends Controller
         $data = $this->getData($request, 'users', (new UserRepository));
 
         $result = parent::index($request, $data);
-        if($result instanceof View) {
+        if($result) {
             return $result;
         }
 

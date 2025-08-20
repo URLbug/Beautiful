@@ -4,6 +4,7 @@ namespace App\Modules\Admin\Controllers;
 
 use App\Interfaces\Repository\RepositoryInterface;
 use App\Modules\Master\Lib\TableValidatorService;
+use App\Modules\S3Storage\Lib\S3Storage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -43,7 +44,7 @@ abstract class Controller
         }
 
         if($request->isMethod('POST')) {
-            return $this->create($request, $data['validator']);
+            return $this->create($request, $data['validator'], $data['repository']);
         }
 
         return null;
@@ -58,9 +59,35 @@ abstract class Controller
         return view('admin.content.detail', data: $data);
     }
 
-    public function create(Request $request, array $validation): RedirectResponse
-    {
-        dd($request->all(), $validation);
+    public function create(
+        Request $request,
+        array $validation,
+        RepositoryInterface $repository,
+    ): RedirectResponse {
+        $data = $request->validate($validation);
+
+        if($request->has('picture')) {
+            $data['picture'] = $this->saveFile($data['picture']);
+        }
+
+        if($request->has('file')) {
+            $data['file'] = $this->saveFile($data['file']);
+        }
+
+        $isSave = false;
+        try {
+            $isSave = $repository::save($data);
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+        }
+
+        if(!$isSave) {
+            return back()->withErrors('Can`t be created element');
+        }
+
+        $url = explode('?', url()->current());
+        return redirect($url[0])
+            ->with('success', 'Created element is complete!');
     }
 
     public function getData(Request $request, string $table, RepositoryInterface $repository): array
@@ -74,13 +101,14 @@ abstract class Controller
             'method' => 'POST',
             'items' => [],
             'validator' => (new TableValidatorService)->generateValidationRulesTable($table),
+            'repository' => $repository,
         ];
 
         $columns = Schema::getColumnListing($table);
         foreach($columns as $column) {
             $type = Schema::getColumnType($table, $column);
 
-            if ($column === 'created_at' || $column === 'updated_at') {
+            if($column == 'id' || $column === 'created_at' || $column === 'updated_at') {
                 continue;
             }
 
@@ -105,5 +133,18 @@ abstract class Controller
         }
 
         return $data;
+    }
+
+    private function saveFile($file)
+    {
+        if($file) {
+            if(!S3Storage::putFile('/', $file)) {
+                return back()->withErrors("Update profile data failed");
+            }
+
+            $file = S3Storage::getFile($file->hashName());
+        }
+
+        return $file;
     }
 }

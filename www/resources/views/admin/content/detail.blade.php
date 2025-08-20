@@ -9,11 +9,20 @@
                 <div class="col-lg-8">
                     @foreach($items as $item)
                         @switch($item['type'])
+                            @case('number')
+                                <div class="mb-3">
+                                    <label class="form-label">{{ $item['column'] }}</label>
+                                    <input type="text"
+                                           name="{{ $item['column'] }}"
+                                           value="{{ $item['value'] ?? '' }}"
+                                           class="form-control">
+                                </div>
+                                @break
                             @case('textarea')
                                 <div class="mb-3">
                                     <label class="form-label">{{ $item['column'] }}</label>
                                     <textarea rows="8"
-                                              name="description"
+                                              name="{{ $item['column'] }}"
                                               class="form-control">{{ $item['value'] ?? '' }}</textarea>
                                 </div>
                                 @break
@@ -22,7 +31,7 @@
                                     <div class="mb-3">
                                         <label class="form-label">{{ $item['column'] }}</label>
                                         <input type="text"
-                                               name="title"
+                                               name="{{ $item['column'] }}"
                                                value="{{ $item['value'] ?? '' }}"
                                                class="form-control">
                                     </div>
@@ -48,7 +57,7 @@
                                              id="uploadContainer" style="cursor: pointer;">
                                             <input type="file"
                                                    id="uploadFile"
-                                                   name="uploadFile"
+                                                   name="{{ $item['column'] }}"
                                                    accept="image/*"
                                                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0">
                                             <input type="hidden"
@@ -68,7 +77,7 @@
                             @case('datetime')
                                 <div class="mb-3">
                                     <label class="form-label">{{ $item['column'] }}</label>
-                                    <input type="datetime-local" name="datetime_field" class="form-control" value="{{ $item['value'] ?? '' }}">
+                                    <input type="datetime-local" name="{{ $item['column'] }}" class="form-control" value="{{ $item['value'] ?? '' }}">
                                 </div>
                                 @break
                             @case('object')

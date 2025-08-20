@@ -97,7 +97,7 @@ class ProfileController extends Controller
     function update(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'picture' => 'image|max:1004|nullable',
+            'picture' => 'image|max:30004|nullable',
             'description' => 'string|max:255|nullable',
             'patreon' => 'string|url|nullable',
             'github' => 'string|url|nullable',

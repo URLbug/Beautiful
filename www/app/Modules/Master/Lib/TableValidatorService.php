@@ -74,7 +74,12 @@ class TableValidatorService
                 $rules[] = 'json';
                 break;
             default:
-                $rules[] = 'string';
+                if(in_array($column, ['picture', 'file'])) {
+                    $rules[] = 'image';
+                    $rules[] = 'max:30004';
+                } else {
+                    $rules[] = 'string';
+                }
         }
 
         $nullable = $this->isColumnNullable($table, $column);
