@@ -48,7 +48,25 @@ final class PostRepository implements PostRepositoryInterface
      */
     public static function update(array $data): int
     {
-        return 0;
+        $query = Post::query();
+
+        if(!isset($data['id'])) {
+            throw new InvalidArgumentException('Required (id) parameter is missing');
+        }
+
+        $id = filter_var($data['id'], FILTER_VALIDATE_INT);
+        if ($id === false) {
+            throw new \InvalidArgumentException('id must be an integer');
+        }
+
+        $query = $query->where('id', $id);
+
+        $updateData = [];
+        foreach($data as $key => $value) {
+            $updateData[$key] = $value;
+        }
+
+        return $query->update($updateData);
     }
 
     /**

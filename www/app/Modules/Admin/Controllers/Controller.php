@@ -30,8 +30,6 @@ abstract class Controller
         'json' => 'object',
     ];
 
-
-
     public function index(Request $request, array $data = []): View|RedirectResponse|null
     {
         if($request->isMethod('GET')) {
@@ -47,6 +45,10 @@ abstract class Controller
             return $this->create($request, $data['validator'], $data['repository']);
         }
 
+        if($request->isMethod('PATCH')) {
+            return $this->update($request, $data['validator'], $data['repository']);
+        }
+
         return null;
     }
 
@@ -57,6 +59,41 @@ abstract class Controller
         }
 
         return view('admin.content.detail', data: $data);
+    }
+
+    public function update(
+        Request $request,
+        array $validation,
+        RepositoryInterface $repository
+    ): RedirectResponse {
+        $data = $request->validate($validation);
+
+        if($request->has('picture')) {
+            $data['picture'] = $this->saveFile($data['picture']);
+        }
+
+        if($request->has('file')) {
+            $data['file'] = $this->saveFile($data['file']);
+        }
+
+        if($request->has('id')) {
+            $data['id'] = $request->get('id');
+        }
+
+        $isUpdate = false;
+        try {
+            $isUpdate = $repository::update($data);
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+        }
+
+        if($isUpdate === false || $isUpdate === 0) {
+            return back()->withErrors('Can`t be update element');
+        }
+
+        $url = explode('?', url()->current());
+        return redirect($url[0])
+            ->with('success', 'Created update is complete!');
     }
 
     public function create(
@@ -94,7 +131,7 @@ abstract class Controller
     {
         $model = null;
         if($request->has('id') && $request->get('id') > 0) {
-            $model = $repository::getAll($request->get('id'));
+            $model = $repository::getById($request->get('id'));
         }
 
         $data = [
@@ -124,7 +161,11 @@ abstract class Controller
 
         if($model) {
             $data['method'] = 'PATCH';
-            foreach($model->first()->toArray() as $fillable => $item) {
+            foreach($model->toArray() as $fillable => $item) {
+                if(!isset($data['items'][$fillable])) {
+                    continue;
+                }
+
                 $data['items'][$fillable] = array_merge(
                     $data['items'][$fillable],
                     ['value' => $item,]

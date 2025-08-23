@@ -224,6 +224,22 @@ a.posts {
     width: 100px;
 }
 
+.cell-text {
+    max-width: 200px;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.json-block {
+    max-width: 400px;
+    max-height: 200px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+
 @media (max-width: 1200px) {
     .responsive-element {
         width: 100%;

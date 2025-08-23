@@ -27,22 +27,22 @@
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('admin.posts') }}" class="nav-link text-dark hover-primary">
-                            <i class="fa-solid fa-bell-concierge fa-fw me-3"></i> Posts
+                            <i class="fa-solid fa-blog fa-fw me-3"></i> Posts
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('admin.comments') }}" class="nav-link text-dark hover-primary">
-                            <i class="fa-solid fa-newspaper fa-fw me-3"></i> Comments
+                            <i class="fa-solid fa-comments fa-fw me-3"></i> Comments
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('admin.users') }}" class="nav-link text-dark hover-primary">
-                            <i class="fa-solid fa-comment fa-fw me-3"></i> Users
+                            <i class="fa-solid fa-users fa-fw me-3"></i> Users
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('admin.roles') }}" class="nav-link text-dark hover-primary">
-                            <i class="fa-solid fa-right-to-bracket fa-fw me-3"></i> Roles
+                            <i class="fa-solid fa-address-book fa-fw me-3"></i> Roles
                         </a>
                     </li>
                     <li class="nav-item">

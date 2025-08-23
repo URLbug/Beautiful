@@ -1,10 +1,31 @@
 @extends('app.admin')
 
 @section('content')
+    <script>
+        async function getDataUrlFromImageUrlFetch(imageUrl) {
+            try {
+                const response = await fetch(imageUrl);
+                const blob = await response.blob();
+
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            } catch (error) {
+                throw new Error('Failed to fetch image: ' + error.message);
+            }
+        }
+    </script>
+
     <div class="p-4">
         <form method="POST" action="{{ url()->current() }}" enctype="multipart/form-data">
             @csrf
             @method($method)
+            @if(request()->has('id'))
+                <input type="hidden" value="{{ request()->get('id') }}" name="id">
+            @endif
             <div class="row">
                 <div class="col-lg-8">
                     @foreach($items as $item)
@@ -42,12 +63,12 @@
                                         <!-- Превью изображения -->
                                         <div id="imagePreview" class="mb-3 text-center">
                                             <img id="previewImage"
-                                                 src=""
+                                                 src="{{ $item['value'] }}"
                                                  alt="Preview Image"
-                                                 class="img-fluid rounded border" style="max-height: 200px; display: none;">
+                                                 class="img-fluid rounded border" style="max-height: 200px; {{ $item['value'] ? '' : 'display: none;' }}">
 
                                             <button type="button" id="removeImage"
-                                                    class="btn btn-sm btn-outline-danger mt-2" style="display: none;">
+                                                    class="btn btn-sm btn-outline-danger mt-2" style="{{ $item['value'] ? '' : 'display: none;' }}">
                                                 <i class="fas fa-trash me-1"></i> Delete file
                                             </button>
                                         </div>
@@ -63,7 +84,7 @@
                                             <input type="hidden"
                                                    id="filepath"
                                                    name="filepath"
-                                                   value="">
+                                                   value="{{ $item['value'] }}">
 
                                             <div>
                                                 <i class="fas fa-upload text-primary fs-4 mb-2"></i>
@@ -71,6 +92,17 @@
                                                 <p class="text-muted small">Перетащите или кликните для выбора</p>
                                             </div>
                                         </div>
+                                        <script>
+                                            getDataUrlFromImageUrlFetch('{{ $item['value'] }}')
+                                                .then(dataUrl => {
+                                                    console.log(dataUrl);
+                                                    document.querySelector('#filepath').value = dataUrl;
+                                                    document.querySelector('#previewImage').value = dataUrl;
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error:', error);
+                                                });
+                                        </script>
                                     </div>
                                 @endif
                                 @break
