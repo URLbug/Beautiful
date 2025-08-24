@@ -40,7 +40,15 @@ final class PostRepository implements PostRepositoryInterface
      */
     public static function remove(array $data): bool
     {
-        return true;
+        if(!isset($data['id'])) {
+            throw new \InvalidArgumentException('Required (id) parameter missing');
+        }
+
+        if(!is_int($data['id'])) {
+            throw new \InvalidArgumentException('Required (id) must be an integer');
+        }
+
+        return Post::query()->find($data['id'])->delete();
     }
 
     /**

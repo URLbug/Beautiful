@@ -60,7 +60,7 @@
                                             <i class="fas fa-edit me-1"></i>
                                             <span class="d-none d-sm-inline">Edit</span>
                                         </a>
-                                        <a data-href="" class="delete-btn btn btn-sm btn-outline-danger">
+                                        <a href="{{ route($route, ['id' => $content->id, 'remove' => 'Y', 'page' => request()->get('page')]) }}" class="delete-btn btn btn-sm btn-outline-danger">
                                             <i class="fas fa-trash me-1"></i>
                                             <span class="d-none d-sm-inline">Remove</span>
                                         </a>

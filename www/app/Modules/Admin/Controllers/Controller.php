@@ -34,6 +34,10 @@ abstract class Controller
     public function index(Request $request, array $data = []): View|RedirectResponse|null
     {
         if($request->isMethod('GET')) {
+            if($request->has('remove') && $request->input('remove') === 'Y') {
+                return $this->remove($request, $data['repository']);
+            }
+
             if(
                 ($request->has('create') && $request->get('create') === 'Y') ||
                 ($request->has('update') && $request->get('update') === 'Y')
@@ -60,6 +64,32 @@ abstract class Controller
         }
 
         return view('admin.content.detail', data: $data);
+    }
+
+    public function remove(Request $request, RepositoryInterface $repository): RedirectResponse
+    {
+        if(!$request->has('id')) {
+            return back()->withErrors('Not found item');
+        }
+
+        $id = $request->get('id');
+        if(filter_var($id, FILTER_VALIDATE_INT) === false) {
+            return back()->withErrors('Not found item');
+        }
+
+        if(!$repository::remove(['id' => (int)$id])) {
+            return back()->withErrors('Can not remove');
+        }
+
+        $url = explode('?', url()->current());
+
+        $url = $url[0];
+        if($request->has('page')) {
+            $url = $url . '?page=' . $request->get('page');
+        }
+
+        return redirect($url)
+            ->with('success', 'Remove element is complete!');
     }
 
     public function update(
@@ -104,7 +134,7 @@ abstract class Controller
 
         $url = explode('?', url()->current());
         return redirect($url[0])
-            ->with('success', 'Created update is complete!');
+            ->with('success', 'Update element is complete!');
     }
 
     public function create(
