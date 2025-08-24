@@ -5,7 +5,6 @@ namespace App\Modules\Admin\Controllers;
 use App\Interfaces\Repository\RepositoryInterface;
 use App\Modules\Master\Lib\TableValidatorService;
 use App\Modules\S3Storage\Lib\S3Storage;
-use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -69,24 +68,15 @@ abstract class Controller
         RepositoryInterface $repository
     ): RedirectResponse {
         if($request->has('picture') && gettype($request->get('picture')) === 'string' ) {
-            $picture = $this->fileUploadFromUrl($request->get('picture'));
-
-            if($picture) {
-                $picture->next();
-                $request->merge(['picture' => $picture]);
-            }
+            $file = $this->fileUploadFromUrl($request->get('picture'));
+            $request->merge(['picture' => $file]);
         }
 
         if($request->has('file') && gettype($request->get('file')) === 'string' ) {
             $file = $this->fileUploadFromUrl($request->get('file'));
-
-            if($file) {
-                dd($file->getReturn(), $request->get('file'));
-                $request->merge(['file' => $file]);
-            }
+            $request->merge(['file' => $file]);
         }
 
-        dd($request->all(), $validation);
         $data = $request->validate($validation);
 
         if($request->has('picture')) {
@@ -225,15 +215,13 @@ abstract class Controller
                 $originalName = basename(parse_url($imageUrl, PHP_URL_PATH));
 
                 // Создаем UploadedFile
-                yield new UploadedFile(
+                return new \Illuminate\Http\UploadedFile(
                     $tempFile,
                     $originalName,
                     $mimeType,
                     null,
                     true
                 );
-
-                unlink($tempFile);
             }
         } catch (\Exception $e) {
             return $e->getMessage();
