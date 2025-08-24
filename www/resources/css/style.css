@@ -1,3 +1,42 @@
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    padding-top: 56px; /* Высота фиксированного навбара */
+}
+
+main {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+footer {
+    flex-shrink: 0;
+}
+
+/* Дополнительные стили для мобильных устройств */
+@media (max-width: 768px) {
+    body {
+        padding-top: 66px; /* Увеличиваем отступ для мобильных устройств */
+    }
+
+    /* Убедимся, что контент не выходит за пределы экрана */
+    .container-fluid, .container {
+        padding-left: 10px;
+        padding-right: 10px;
+        overflow-x: hidden;
+    }
+
+    /* Улучшаем отображение форм на мобильных */
+    input, textarea, button {
+        max-width: 100%;
+    }
+}
+
 .main-picture {
     position: relative;
 }
