@@ -1,24 +1,6 @@
 @extends('app.admin')
 
 @section('content')
-    <script>
-        async function getDataUrlFromImageUrlFetch(imageUrl) {
-            try {
-                const response = await fetch(imageUrl);
-                const blob = await response.blob();
-
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-                });
-            } catch (error) {
-                throw new Error('Failed to fetch image: ' + error.message);
-            }
-        }
-    </script>
-
     <div class="p-4">
         <form method="POST" action="{{ url()->current() }}" enctype="multipart/form-data">
             @csrf
@@ -28,6 +10,11 @@
             @endif
             <div class="row">
                 <div class="col-lg-8">
+                    @if(request()->has('id'))
+                        <div class="mb-3">
+                            <h5>ID: {{ request()->get('id') }}</h5>
+                        </div>
+                    @endif
                     @foreach($items as $item)
                         @switch($item['type'])
                             @case('number')
@@ -63,12 +50,12 @@
                                         <!-- Превью изображения -->
                                         <div id="imagePreview" class="mb-3 text-center">
                                             <img id="previewImage"
-                                                 src="{{ $item['value'] }}"
+                                                 src="{{ $item['value'] ?? '' }}"
                                                  alt="Preview Image"
-                                                 class="img-fluid rounded border" style="max-height: 200px; {{ $item['value'] ? '' : 'display: none;' }}">
+                                                 class="img-fluid rounded border" style="max-height: 200px; {{ $item['value'] ?? 'display: none;' }}">
 
                                             <button type="button" id="removeImage"
-                                                    class="btn btn-sm btn-outline-danger mt-2" style="{{ $item['value'] ? '' : 'display: none;' }}">
+                                                    class="btn btn-sm btn-outline-danger mt-2" style="{{ $item['value'] ?? 'display: none;' }}">
                                                 <i class="fas fa-trash me-1"></i> Delete file
                                             </button>
                                         </div>
@@ -83,8 +70,8 @@
                                                    class="position-absolute top-0 start-0 w-100 h-100 opacity-0">
                                             <input type="hidden"
                                                    id="filepath"
-                                                   name="filepath"
-                                                   value="{{ $item['value'] }}">
+                                                   name="{{ $item['column'] }}"
+                                                   value="{{ $item['value'] ?? '' }}">
 
                                             <div>
                                                 <i class="fas fa-upload text-primary fs-4 mb-2"></i>
@@ -92,17 +79,6 @@
                                                 <p class="text-muted small">Перетащите или кликните для выбора</p>
                                             </div>
                                         </div>
-                                        <script>
-                                            getDataUrlFromImageUrlFetch('{{ $item['value'] }}')
-                                                .then(dataUrl => {
-                                                    console.log(dataUrl);
-                                                    document.querySelector('#filepath').value = dataUrl;
-                                                    document.querySelector('#previewImage').value = dataUrl;
-                                                })
-                                                .catch(error => {
-                                                    console.error('Error:', error);
-                                                });
-                                        </script>
                                     </div>
                                 @endif
                                 @break
@@ -133,7 +109,7 @@
 
             <div class="d-flex justify-content-between align-items-center mt-4">
                 <div class="d-flex gap-2">
-                    <a href="" class="btn btn-outline-secondary">
+                    <a href="{{ url()->current() }}" class="btn btn-outline-secondary">
                         Cancel
                     </a>
                     <button type="submit" class="btn btn-primary">

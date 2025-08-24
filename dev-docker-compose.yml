@@ -7,11 +7,9 @@ services:
       dockerfile: ./etc/nginx/nginx.Dockerfile
     container_name: beautiful-web
     ports:
-      - '4444:80'
+      - '80:80'
     volumes:
       - ./www:/var/www
-      - ./certbot/www/:/var/www/certbot
-      - ./certbot/conf/:/etc/letsencrypt/
     depends_on:
       - php
     networks:
@@ -19,7 +17,7 @@ services:
   php:
     build: 
       context: .
-      dockerfile: ./etc/php/php.Dockerfile
+      dockerfile: ./etc/php/php.dev.Dockerfile
     ports:
       - '9000:9000'
     depends_on:
@@ -66,14 +64,6 @@ services:
       - '9090:9090'
     volumes:
       - ./locals3root:/containers3root
-    networks:
-      - beautiful-net
-
-  certbot:
-    image: certbot/certbot:latest
-    volumes:
-      - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
     networks:
       - beautiful-net
 

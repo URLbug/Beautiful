@@ -5,8 +5,10 @@ namespace App\Modules\Admin\Controllers;
 use App\Interfaces\Repository\RepositoryInterface;
 use App\Modules\Master\Lib\TableValidatorService;
 use App\Modules\S3Storage\Lib\S3Storage;
+use GuzzleHttp\Psr7\UploadedFile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
@@ -66,6 +68,25 @@ abstract class Controller
         array $validation,
         RepositoryInterface $repository
     ): RedirectResponse {
+        if($request->has('picture') && gettype($request->get('picture')) === 'string' ) {
+            $picture = $this->fileUploadFromUrl($request->get('picture'));
+
+            if($picture) {
+                $picture->next();
+                $request->merge(['picture' => $picture]);
+            }
+        }
+
+        if($request->has('file') && gettype($request->get('file')) === 'string' ) {
+            $file = $this->fileUploadFromUrl($request->get('file'));
+
+            if($file) {
+                dd($file->getReturn(), $request->get('file'));
+                $request->merge(['file' => $file]);
+            }
+        }
+
+        dd($request->all(), $validation);
         $data = $request->validate($validation);
 
         if($request->has('picture')) {
@@ -187,5 +208,35 @@ abstract class Controller
         }
 
         return $file;
+    }
+
+    private function fileUploadFromUrl(string $imageUrl)
+    {
+        try {
+            $response = Http::get($imageUrl);
+
+            if ($response->successful()) {
+                // Создаем временный файл
+                $tempFile = tempnam(sys_get_temp_dir(), 'laravel_upload');
+                file_put_contents($tempFile, $response->body());
+
+                // Получаем информацию о файле
+                $mimeType = $response->getHeader('Content-Type')[0] ?? 'image/jpeg';
+                $originalName = basename(parse_url($imageUrl, PHP_URL_PATH));
+
+                // Создаем UploadedFile
+                yield new UploadedFile(
+                    $tempFile,
+                    $originalName,
+                    $mimeType,
+                    null,
+                    true
+                );
+
+                unlink($tempFile);
+            }
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 }

@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function(){
         const previewImage = document.getElementById('previewImage');
         const removeImage = document.getElementById('removeImage');
         const uploadContainer = document.getElementById('uploadContainer');
+        const filepath =  document.getElementById('filepath');
 
         if (uploadFile && previewImage && removeImage) {
             uploadFile.addEventListener('change', function(e) {
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function(){
             removeImage.addEventListener('click', function() {
                 uploadFile.value = '';
                 previewImage.src = '';
+                filepath.value = '';
                 previewImage.style.display = 'none';
                 removeImage.style.display = 'none';
             });
@@ -62,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
                 if (e.dataTransfer.files.length) {
                     uploadFile.files = e.dataTransfer.files;
+                    filepath.value = e.dataTransfer.files;
                     const event = new Event('change');
                     uploadFile.dispatchEvent(event);
                 }
