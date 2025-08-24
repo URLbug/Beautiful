@@ -23,15 +23,15 @@ class CommentRepository implements CommentRepositoryInterface
             throw new \InvalidArgumentException('Required (user_id, post_id, description) parameters is missing');
         }
 
-        if(!is_int($data['user_id']) || !is_int($data['post_id'])) {
+        if(!filter_var($data['user_id'], FILTER_VALIDATE_INT) || !filter_var($data['post_id'], FILTER_VALIDATE_INT)) {
             throw new \InvalidArgumentException('Required (user_id, post_id) is must be integer');
         }
 
         $comment = new Comment;
 
-        $comment->user_id = $data['user_id'];
-        $comment->post_id = $data['post_id'];
-        $comment->description = $data['description'];
+        foreach($data as $key => $value) {
+            $comment->{$key} = $value;
+        }
 
         return $comment->save();
     }

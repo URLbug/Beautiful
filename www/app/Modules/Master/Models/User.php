@@ -8,6 +8,7 @@ use App\Modules\Profile\Models\Like;
 use App\Modules\Profile\Models\Post;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,14 +23,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'username',
         'email',
         'password',
         'remember_token',
         'picture',
         'description',
-        'permissions',
         'email_verified_at',
         'socialnetworks',
     ];
@@ -67,6 +66,11 @@ class User extends Authenticatable
     function like(): HasMany
     {
         return $this->hasMany(Like::class);
+    }
+
+    function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id');
     }
 
     /**

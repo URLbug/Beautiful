@@ -38,6 +38,7 @@ class RegistrationController extends Controller
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'role_id' => 2,
         ]);
         if(!$isSaved) {
             return back()->withErrors('Failed to registration user');

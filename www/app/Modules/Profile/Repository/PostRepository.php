@@ -28,10 +28,9 @@ final class PostRepository implements PostRepositoryInterface
 
         $post = new Post;
 
-        $post->file = $data['file'];
-        $post->name = $data['name'];
-        $post->description = $data['description'];
-        $post->user_id = $data['user_id'];
+        foreach($data as $key => $value) {
+            $post->{$key} = $value;
+        }
 
         return $post->save();
     }
@@ -41,7 +40,15 @@ final class PostRepository implements PostRepositoryInterface
      */
     public static function remove(array $data): bool
     {
-        return true;
+        if(!isset($data['id'])) {
+            throw new \InvalidArgumentException('Required (id) parameter missing');
+        }
+
+        if(!is_int($data['id'])) {
+            throw new \InvalidArgumentException('Required (id) must be an integer');
+        }
+
+        return Post::query()->find($data['id'])->delete();
     }
 
     /**
@@ -49,7 +56,25 @@ final class PostRepository implements PostRepositoryInterface
      */
     public static function update(array $data): int
     {
-        return 0;
+        $query = Post::query();
+
+        if(!isset($data['id'])) {
+            throw new InvalidArgumentException('Required (id) parameter is missing');
+        }
+
+        $id = filter_var($data['id'], FILTER_VALIDATE_INT);
+        if ($id === false) {
+            throw new \InvalidArgumentException('id must be an integer');
+        }
+
+        $query = $query->where('id', $id);
+
+        $updateData = [];
+        foreach($data as $key => $value) {
+            $updateData[$key] = $value;
+        }
+
+        return $query->update($updateData);
     }
 
     /**
